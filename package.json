@@ -1,16 +1,28 @@
 {
   "name": "pg-poultry",
+  "private": true,
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Marian-N/pg-poultry.git"
   },
   "keywords": [
-    "three.js"
-  ]
+    "three.js",
+    "vite"
+  ],
+  "dependencies": {
+    "three": "^0.146.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.144.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.0"
+  }
 }
