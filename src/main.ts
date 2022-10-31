@@ -1,59 +1,97 @@
 import * as THREE from 'three';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 
-let scene: THREE.Scene,
-  renderer: THREE.WebGLRenderer,
-  camera: THREE.PerspectiveCamera,
+class PoultryGame {
+  scene: THREE.Scene;
+  renderer: THREE.WebGLRenderer;
+  camera: THREE.PerspectiveCamera;
   torus: THREE.Mesh;
+  _running: boolean;
 
-if (WebGL.isWebGLAvailable()) {
-  init();
-  animate();
-} else {
-  // Display error message if webgl is not supported
-  const warning = WebGL.getWebGLErrorMessage();
-  document.body.appendChild(warning);
+  constructor() {
+    this._running = false;
+    this._init();
+  }
+
+  _init() {
+    this.scene = new THREE.Scene();
+    this.renderer = this._init_renderer();
+    this.camera = this._init_camera();
+    this.renderer.render(this.scene, this.camera);
+    document.body.appendChild(this.renderer.domElement);
+    window.addEventListener(
+      'resize',
+      () => {
+        this._onWindowResize();
+      },
+      false
+    );
+
+    const geometry = new THREE.TorusGeometry(
+      window.innerWidth / 100,
+      3,
+      16,
+      100
+    );
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xff6347,
+      wireframe: true
+    });
+    this.torus = new THREE.Mesh(geometry, material);
+
+    this.scene.add(this.torus);
+    this._animate();
+  }
+
+  _animate() {
+    requestAnimationFrame(() => this._animate());
+    if (!this._running) return;
+    this.renderer.render(this.scene, this.camera);
+    this.torus.rotation.x += 0.01;
+    this.torus.rotation.y += 0.005;
+    this.torus.rotation.y += 0.01;
+  }
+
+  start() {
+    this._running = true;
+  }
+
+  stop() {
+    this._running = false;
+  }
+
+  _init_renderer(): THREE.WebGLRenderer {
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    return renderer;
+  }
+
+  _init_camera(): THREE.PerspectiveCamera {
+    const fov = 60;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 1.0;
+    const far = 10000.0;
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.setZ(50);
+    return camera;
+  }
+
+  _onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
 }
 
-function init() {
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.25,
-    100
-  );
-  renderer = new THREE.WebGLRenderer();
-
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.position.setZ(40);
-
-  renderer.render(scene, camera);
-
-  const geometry = new THREE.TorusGeometry(window.innerWidth / 100, 3, 16, 100);
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xff6347,
-    wireframe: true
-  });
-  torus = new THREE.Mesh(geometry, material);
-
-  window.addEventListener('resize', onWindowResize);
-  document.body.appendChild(renderer.domElement);
-  scene.add(torus);
-}
-
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-  torus.rotation.x += 0.01;
-  torus.rotation.y += 0.005;
-  torus.rotation.y += 0.01;
-}
+let P: PoultryGame;
+window.addEventListener('DOMContentLoaded', () => {
+  if (WebGL.isWebGLAvailable()) {
+    P = new PoultryGame();
+    P.start();
+  } else {
+    // Display error message if webgl is not supported
+    const warning = WebGL.getWebGLErrorMessage();
+    document.body.appendChild(warning);
+  }
+});
