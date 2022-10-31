@@ -4,7 +4,6 @@ import WebGL from 'three/examples/jsm/capabilities/WebGL';
 let scene: THREE.Scene,
   renderer: THREE.WebGLRenderer,
   camera: THREE.PerspectiveCamera,
-  clock: THREE.Clock,
   torus: THREE.Mesh;
 
 if (WebGL.isWebGLAvailable()) {
@@ -25,7 +24,6 @@ function init() {
     100
   );
   renderer = new THREE.WebGLRenderer();
-  clock = new THREE.Clock();
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
