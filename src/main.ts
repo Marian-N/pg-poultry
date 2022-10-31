@@ -1,34 +1,55 @@
 import * as THREE from 'three';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera();
-
-const renderer = new THREE.WebGLRenderer();
-
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(500, 500);
-camera.position.setZ(40);
-
-renderer.render(scene, camera);
-
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-const material = new THREE.MeshBasicMaterial({
-  color: 0xff6347,
-  wireframe: true
-});
-const torus = new THREE.Mesh(geometry, material);
-
-scene.add(torus);
+let scene: THREE.Scene,
+  renderer: THREE.WebGLRenderer,
+  camera: THREE.PerspectiveCamera,
+  clock: THREE.Clock,
+  torus: THREE.Mesh;
 
 if (WebGL.isWebGLAvailable()) {
-  // Initiate function or other initializations here
-  document.body.appendChild(renderer.domElement);
+  init();
   animate();
 } else {
+  // Display error message if webgl is not supported
   const warning = WebGL.getWebGLErrorMessage();
   document.body.appendChild(warning);
+}
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    0.25,
+    100
+  );
+  renderer = new THREE.WebGLRenderer();
+  clock = new THREE.Clock();
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.position.setZ(40);
+
+  renderer.render(scene, camera);
+
+  const geometry = new THREE.TorusGeometry(window.innerWidth / 100, 3, 16, 100);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xff6347,
+    wireframe: true
+  });
+  torus = new THREE.Mesh(geometry, material);
+
+  window.addEventListener('resize', onWindowResize);
+  document.body.appendChild(renderer.domElement);
+  scene.add(torus);
+}
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function animate() {
