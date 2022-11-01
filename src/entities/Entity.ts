@@ -15,8 +15,13 @@ class Entity {
     return this.id;
   }
 
+  /** add update function that is called every animation frame
+   * @param {Function} update - the update function
+   * @returns {Entity} - the entity so you can chain the function
+   */
   setUpdate(update: Function) {
     this.update = update;
+    return this;
   }
 }
 
