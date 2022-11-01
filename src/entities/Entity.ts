@@ -1,11 +1,18 @@
 class Entity {
-  id: number;
+  private id: string;
   update?: Function;
   object: THREE.Object3D;
 
-  constructor(id: number, object: THREE.Object3D) {
-    this.id = id;
+  constructor(object: THREE.Object3D) {
     this.object = object;
+  }
+
+  setId(id: string) {
+    this.id = id;
+  }
+
+  getId() {
+    return this.id;
   }
 
   setUpdate(update: Function) {

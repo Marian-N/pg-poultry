@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { randInt } from 'three/src/math/MathUtils';
+import Entity from './entities/Entity';
 import EntityManager from './entities/EntityManager';
 
 class Game {
@@ -45,12 +46,13 @@ class Game {
       this.scene.add(this.torus);
       this.torus.position.set(randInt(-10, 10), randInt(-10, 10), 0);
 
-      const entity = this.entityManager.add(this.torus);
+      const entity = new Entity(this.torus);
       entity.setUpdate(() => {
         entity.object.rotation.x += 0.01;
         entity.object.rotation.y += 0.005;
         entity.object.rotation.y += 0.01;
       });
+      this.entityManager.add(entity);
     }
   }
 

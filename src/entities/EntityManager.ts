@@ -1,7 +1,8 @@
 import Entity from './Entity';
 
+/** Entity manager stores all entities in map with their id as a key */
 class EntityManager {
-  private entities: Record<number, Entity>;
+  private entities: Record<string, Entity>;
   private idCounter: number;
 
   constructor() {
@@ -9,19 +10,38 @@ class EntityManager {
     this.idCounter = 0;
   }
 
-  add(object: THREE.Object3D) {
+  private generateUid() {
     this.idCounter++;
-    const entity = new Entity(this.idCounter, object);
-    this.entities[this.idCounter] = entity;
-    return entity;
+    return this.idCounter.toString();
   }
 
-  get(id: number) {
+  /**
+   * Add an entity to the manager
+   * @param {Entity} entity - the entity to add
+   * @param {string} id - the id to assign to the entity
+   * @throws Will throw en error when entity with the same id already exists
+   */
+  add(entity: Entity, id?: string) {
+    // Generate a unique id if none is provided
+    if (!id) {
+      id = this.generateUid();
+    }
+
+    if (this.entities[id]) {
+      throw new Error(`Entity with id ${id} already exists`);
+    }
+
+    entity.setId(id);
+    this.entities[id] = entity;
+  }
+
+  get(id: number): Entity | undefined {
     return this.entities[id];
   }
 
+  /** Update every entity in entity manager */
   update() {
-    for (const id in this.entities) {
+    for (let id in this.entities) {
       const entity = this.entities[id];
       if (entity.update) entity.update();
     }
