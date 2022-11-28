@@ -7,6 +7,7 @@ import Goose from '../resources/models/poultry/Goose.gltf';
 import Hen from '../resources/models/poultry/Hen.gltf';
 import Turkey from '../resources/models/poultry/Turkey.gltf';
 import Rooster from '../resources/models/poultry/Rooster.gltf';
+import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
 
 class Game {
@@ -88,7 +89,7 @@ class Game {
 
   private addBackground() {
     const loader = new THREE.TextureLoader();
-    const bgTexture = loader.load('../resources/background/sky_1.jpg');
+    const bgTexture = loader.load(Sky);
     this.scene.background = bgTexture;
   }
 
