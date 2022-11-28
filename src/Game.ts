@@ -1,7 +1,12 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import EntityManager from './entities/EntityManager';
-import Cow from '../resources/models/poultry/Cow.gltf';
+import Chick from '../resources/models/poultry/Chick.gltf';
+import Goose from '../resources/models/poultry/Goose.gltf';
+import Hen from '../resources/models/poultry/Hen.gltf';
+import Turkey from '../resources/models/poultry/Turkey.gltf';
+import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Entity from './entities/Entity';
 
 class Game {
@@ -12,6 +17,7 @@ class Game {
   private entityManager: EntityManager;
   private sun: THREE.DirectionalLight;
   private clock: THREE.Clock;
+  private controls: OrbitControls;
   torus: THREE.Mesh;
 
   constructor() {
@@ -24,6 +30,7 @@ class Game {
     this.renderer = this.init_renderer();
     this.camera = this.init_camera();
     this.sun = this.init_sun();
+    this.controls = this.init_controls();
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
@@ -36,29 +43,73 @@ class Game {
       },
       false
     );
-    this.addCow();
+
+    this.addLight();
+    // this.addSkybox();
+    this.addBackground();
+    this.addGround();
+    this.addChick();
 
     this.animate();
   }
 
-  private addCow() {
+  private addChick() {
     const loader = new GLTFLoader();
-    loader.load(Cow, (gltf) => {
-      const cow = gltf.scene;
-      cow.position.set(0, -5, 30);
-      cow.scale.set(2, 2, 2);
-      cow.rotateY(0.5);
+    loader.load(Chick, (gltf) => {
+      const chick = gltf.scene;
+      chick.position.set(0, -5, 30);
+      chick.scale.set(0.05, 0.05, 0.05);
+      chick.rotateY(0.5);
 
-      const mixer = new THREE.AnimationMixer(cow);
+      const mixer = new THREE.AnimationMixer(chick);
       const action = mixer.clipAction(gltf.animations[4]);
       action.play();
       this.entityManager.add(
-        new Entity(cow).setUpdate(() => {
+        new Entity(chick).setUpdate(() => {
           mixer.update(this.clock.getDelta());
         })
       );
-      this.scene.add(cow);
+      this.scene.add(chick);
     });
+  }
+
+  private addSkybox() {
+    const loader = new THREE.CubeTextureLoader();
+    const texture = loader.load([
+      '../resources/skybox/px.png',
+      '../resources/skybox/nx.png',
+      '../resources/skybox/py.png',
+      '../resources/skybox/ny.png',
+      '../resources/skybox/pz.png',
+      '../resources/skybox/nz.png'
+    ]);
+    this.scene.background = texture;
+  }
+
+  private addBackground() {
+    const loader = new THREE.TextureLoader();
+    const bgTexture = loader.load('../resources/background/sky_1.jpg');
+    this.scene.background = bgTexture;
+  }
+
+  private addGround() {
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(1000, 1000),
+      new THREE.MeshPhongMaterial({
+        color: 0x50c878, // color of the ground
+        side: THREE.DoubleSide, // render from both sides of the plane
+        depthWrite: false, // do not write to the depth buffer
+        reflectivity: 0.1, // how much light is reflected
+        shininess: 10 // how shiny the reflection is
+      })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    this.scene.add(ground);
+  }
+
+  private addLight() {
+    const light = new THREE.AmbientLight(0x404040, 0.2); // soft white light
+    this.scene.add(light);
   }
 
   private animate() {
@@ -89,14 +140,28 @@ class Game {
     const near = 1.0;
     const far = 10000.0;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.setZ(50);
+    camera.position.setZ(100);
+    camera.position.setY(100);
+    camera.position.setX(100);
     return camera;
   }
 
   private init_sun() {
-    const sun = new THREE.DirectionalLight(0xffffff, 1.0);
-    sun.position.set(0, 0, 1);
+    const sun = new THREE.DirectionalLight(0xf4e99b, 1.0);
+    sun.position.set(0, 1, 1);
     return sun;
+  }
+
+  private init_controls() {
+    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 50;
+    controls.maxDistance = 1000;
+    controls.maxPolarAngle = Math.PI / 3; // decrease to 2.1 max
+    controls.minPolarAngle = Math.PI / 5; // remove this line to remove the limit
+    return controls;
   }
 
   private onWindowResize() {
