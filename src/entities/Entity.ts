@@ -5,6 +5,7 @@ class Entity {
 
   constructor(object: THREE.Object3D) {
     this.object = object;
+    object.userData.isContainer = true;
   }
 
   setId(id: string) {

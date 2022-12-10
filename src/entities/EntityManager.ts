@@ -35,6 +35,10 @@ class EntityManager {
     this.entities[id] = entity;
   }
 
+  getEntities(): Entity[] {
+    return Object.values(this.entities);
+  }
+
   get(id: number): Entity | undefined {
     return this.entities[id];
   }

@@ -9,6 +9,7 @@ import Turkey from '../resources/models/poultry/Turkey.gltf';
 import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
+import Pointer from './Pointer';
 
 class Game {
   private scene: THREE.Scene;
@@ -19,6 +20,7 @@ class Game {
   private sun: THREE.DirectionalLight;
   private clock: THREE.Clock;
   private controls: OrbitControls;
+  private pointer: Pointer;
   torus: THREE.Mesh;
 
   constructor() {
@@ -32,6 +34,7 @@ class Game {
     this.camera = this.init_camera();
     this.sun = this.init_sun();
     this.controls = this.init_controls();
+    this.pointer = new Pointer();
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
@@ -116,6 +119,8 @@ class Game {
   private animate() {
     requestAnimationFrame(() => this.animate());
     if (!this.running) return;
+    this.controls.update();
+    this.pointer.update(this.camera, this.entityManager.getEntities());
     this.renderer.render(this.scene, this.camera);
     this.entityManager.update();
   }
@@ -167,7 +172,6 @@ class Game {
 
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
