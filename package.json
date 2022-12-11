@@ -7,7 +7,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "npm run build && vite preview"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "vite"
   ],
   "dependencies": {
-    "feather-icons": "^4.29.0",
+    "bootstrap-icons": "^1.10.2",
     "three": "^0.146.0"
   },
   "devDependencies": {
