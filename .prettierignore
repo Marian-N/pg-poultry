@@ -1,3 +1,4 @@
 .prettierignore
 package-lock.json
 build/
+resources/
