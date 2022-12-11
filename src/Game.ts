@@ -22,7 +22,7 @@ class Game {
   private clock: THREE.Clock;
   private controls: OrbitControls;
   private pointer: Pointer;
-  private ui : Ui;
+  private ui: Ui;
   torus: THREE.Mesh;
 
   constructor() {
@@ -73,15 +73,21 @@ class Game {
       action.play();
       let chickEntity = new Entity(chick).setUpdate(() => {
         mixer.update(this.clock.getDelta());
-      })
+      });
       chickEntity.onClick = (event) => {
         const popup = document.getElementById('popup') as HTMLElement;
         popup.classList.add('active');
-        const popupTitle = popup?.getElementsByClassName('popup__header__title')[0] as HTMLElement;
-        popupTitle.innerHTML = 'Chick' + chickEntity.getId();
+        const popupTitle = popup?.getElementsByClassName(
+          'popup__header__title'
+        )[0] as HTMLElement;
+        popupTitle.innerHTML = 'Chick - ' + chickEntity.getId();
+        const popupContent = popup?.getElementsByClassName(
+          'popup__body__content'
+        )[0] as HTMLElement;
+        popupContent.innerHTML = 'cluck '.repeat(8);
         popup.style.left = event.clientX + 'px';
         popup.style.top = event.clientY + 'px';
-      }
+      };
       this.entityManager.add(chickEntity);
       this.scene.add(chick);
     });
