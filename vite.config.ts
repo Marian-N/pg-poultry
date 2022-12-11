@@ -14,7 +14,8 @@ export default defineConfig({
       '~bootstrap-icons': path.resolve(
         __dirname,
         'node_modules/bootstrap-icons'
-      )
+      ),
+      fonts: path.resolve(__dirname, 'resources/fonts')
     }
   },
   plugins: [
