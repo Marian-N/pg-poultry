@@ -4,6 +4,10 @@
     "trailingComma": "none",
     "tabWidth": 2,
     "useTabs": false,
-    "semi": true
+    "semi": true,
+    "cssEnable": [
+      "css",
+      "scss"
+    ]
   }
   

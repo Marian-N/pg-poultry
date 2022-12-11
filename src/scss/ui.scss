@@ -1,0 +1,23 @@
+.popup {
+    display: none;
+    border-radius: 8px;
+    min-width: 100px;
+    padding: 4px 8px;
+    background-color: azure;
+
+    &.active {
+        display: block;
+        position: absolute;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 32px;
+
+        &__close {
+            color: red;
+            margin-left: 8px;
+        }
+    }
+}

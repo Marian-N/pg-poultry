@@ -5,14 +5,14 @@ class Pointer {
     private raycaster: THREE.Raycaster;
     private mouse: THREE.Vector2;
     private intersected: Entity | null;
-    onClick: (entity: Entity) => void | null;
+    onClick: (entity: Entity, event: MouseEvent) => void | null;
 
     constructor() {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
 
         window.addEventListener("mousemove", (event: MouseEvent) => this.onMouseMove(event), false);
-        window.addEventListener("click", () => this.handleOnClick(), false);
+        window.addEventListener("click", (event) => this.handleOnClick(event), false);
     }
 
     getIntersectedObject() {
@@ -40,8 +40,8 @@ class Pointer {
         }
     }
 
-    private handleOnClick() {
-        if (this.onClick && this.intersected) this.onClick(this.intersected);
+    private handleOnClick(event: MouseEvent) {
+        if (this.onClick && this.intersected) this.onClick(this.intersected, event);
     }
 
     private onMouseMove(event: MouseEvent) {

@@ -2,6 +2,7 @@ class Entity {
   private id: string;
   update?: Function;
   object: THREE.Object3D;
+  onClick?: (event: MouseEvent) => void;
 
   constructor(object: THREE.Object3D) {
     this.object = object;
@@ -23,6 +24,10 @@ class Entity {
   setUpdate(update: Function) {
     this.update = update;
     return this;
+  }
+
+  handleClick(event: MouseEvent) {
+    if(this.onClick) this.onClick(event);
   }
 }
 

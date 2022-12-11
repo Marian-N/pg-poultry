@@ -10,6 +10,7 @@ import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
 import Pointer from './Pointer';
+import Ui from './Ui';
 
 class Game {
   private scene: THREE.Scene;
@@ -21,6 +22,7 @@ class Game {
   private clock: THREE.Clock;
   private controls: OrbitControls;
   private pointer: Pointer;
+  private ui : Ui;
   torus: THREE.Mesh;
 
   constructor() {
@@ -35,6 +37,7 @@ class Game {
     this.sun = this.init_sun();
     this.controls = this.init_controls();
     this.pointer = new Pointer();
+    this.ui = new Ui(this.pointer);
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
@@ -68,11 +71,18 @@ class Game {
       const mixer = new THREE.AnimationMixer(chick);
       const action = mixer.clipAction(gltf.animations[4]);
       action.play();
-      this.entityManager.add(
-        new Entity(chick).setUpdate(() => {
-          mixer.update(this.clock.getDelta());
-        })
-      );
+      let chickEntity = new Entity(chick).setUpdate(() => {
+        mixer.update(this.clock.getDelta());
+      })
+      chickEntity.onClick = (event) => {
+        const popup = document.getElementById('popup') as HTMLElement;
+        popup.classList.add('active');
+        const popupTitle = popup?.getElementsByClassName('popup__header__title')[0] as HTMLElement;
+        popupTitle.innerHTML = 'Chick' + chickEntity.getId();
+        popup.style.left = event.clientX + 'px';
+        popup.style.top = event.clientY + 'px';
+      }
+      this.entityManager.add(chickEntity);
       this.scene.add(chick);
     });
   }
