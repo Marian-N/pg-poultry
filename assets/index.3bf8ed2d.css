@@ -1,0 +1,1 @@
+body{margin:0}.popup{display:none;border-radius:8px;min-width:100px;padding:4px 8px;background-color:azure}.popup.active{display:block;position:absolute}.popup__header{display:flex;justify-content:space-between;font-size:32px}.popup__header__close{color:red;margin-left:8px}
