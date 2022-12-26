@@ -84,18 +84,12 @@ class Game {
       //   mixer.update(this.clock.getDelta());
       // });
       chickEntity.onClick = (event) => {
-        const popup = document.getElementById('popup') as HTMLElement;
-        popup.classList.add('active');
-        const popupTitle = popup?.getElementsByClassName(
-          'popup__header__title'
-        )[0] as HTMLElement;
-        popupTitle.innerHTML = 'Chick - ' + chickEntity.getId();
-        const popupContent = popup?.getElementsByClassName(
-          'popup__body__content'
-        )[0] as HTMLElement;
-        popupContent.innerHTML = 'cluck '.repeat(8);
-        popup.style.left = event.clientX + 'px';
-        popup.style.top = event.clientY + 'px';
+        const popup = this.ui.popup;
+        popup.element.classList.add('active');
+        popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
+        popup.content.innerHTML = 'cluck '.repeat(8);
+        popup.element.style.left = event.clientX + 'px';
+        popup.element.style.top = event.clientY + 'px';
       };
       this.scene.add(chick);
     });

@@ -1,0 +1,40 @@
+.hud {
+  margin-top: 16px;
+  position: absolute;
+  width: 100%;
+
+  &__content {
+    position: relative;
+    margin-inline: 32px;
+    display: flex;
+    justify-content: space-between;
+
+    &__left {
+      display: flex;
+    }
+
+    &__right {
+      display: flex;
+    }
+  }
+}
+
+.hud__item {
+  @extend .sketch-border;
+  margin-inline: 12px;
+  padding: 8px 12px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+
+  &__title {
+    font-family: $ff-marhey;
+    font-weight: bold;
+  }
+
+  &__value {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: $ff-quicksand;
+  }
+}
