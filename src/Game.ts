@@ -9,6 +9,7 @@ import Turkey from '../resources/models/poultry/Turkey.gltf';
 import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
+import ChickenEntity from './entities/ChickenEntity';
 import Pointer from './Pointer';
 import Ui from './Ui';
 
@@ -74,7 +75,7 @@ class Game {
       // const mixer = new THREE.AnimationMixer(chick);
       // const action = mixer.clipAction(gltf.animations[4]);
       // action.play();
-      const chickEntity = this.entityManager.add(new Entity(chick));
+      const chickEntity = this.entityManager.add(new ChickenEntity(chick));
       const action = chickEntity.mixer.clipAction(gltf.animations[4]);
       chickEntity.animateAction.push(action);
       chickEntity.activeAction = chickEntity.animateAction[0];
@@ -96,7 +97,6 @@ class Game {
         popup.style.left = event.clientX + 'px';
         popup.style.top = event.clientY + 'px';
       };
-      this.entityManager.add(chickEntity);
       this.scene.add(chick);
     });
   }
