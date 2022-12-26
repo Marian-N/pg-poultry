@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Quicksand';
+  src: url('fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Marhey';
+  src: url('fonts/Marhey/Marhey-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'RubikVinyl';
+  src: url('fonts/RubikVinyl/RubikVinyl-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'PermanentMarker';
+  src: url('fonts/PermanentMarker/PermanentMarker-Regular.ttf')
+    format('truetype');
+}
+
+$ff-quicksand: 'Quicksand', sans-serif;
+$ff-marhey: 'Marhey', sans-serif;
+$ff-rubik: 'RubikVinyl', sans-serif;
+$ff-permanentMarker: 'PermanentMarker', sans-serif;

@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 class Entity {
   private id: string;
@@ -11,7 +11,10 @@ class Entity {
   constructor(object: THREE.Object3D) {
     this.object = object;
     this.mixer = new THREE.AnimationMixer(object);
+    object.userData.isContainer = true;
   }
+
+  onClick?: (event: MouseEvent) => void;
 
   setId(id: string) {
     this.id = id;
@@ -30,6 +33,10 @@ class Entity {
     if (this.mixer) {
       this.mixer.update(time);
     }
+  }
+
+  handleClick(event: MouseEvent) {
+    if (this.onClick) this.onClick(event);
   }
 }
 

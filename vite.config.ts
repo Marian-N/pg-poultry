@@ -1,3 +1,4 @@
+import path from 'path';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -5,6 +6,18 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
   base: '/pg-poultry/',
+  build: {
+    chunkSizeWarningLimit: 1000
+  },
+  resolve: {
+    alias: {
+      '~bootstrap-icons': path.resolve(
+        __dirname,
+        'node_modules/bootstrap-icons'
+      ),
+      fonts: path.resolve(__dirname, 'resources/fonts')
+    }
+  },
   plugins: [
     checker({ typescript: true }),
     viteStaticCopy({

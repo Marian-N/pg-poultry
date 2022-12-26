@@ -9,6 +9,8 @@ import Turkey from '../resources/models/poultry/Turkey.gltf';
 import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
+import Pointer from './Pointer';
+import Ui from './Ui';
 
 class Game {
   private scene: THREE.Scene;
@@ -20,6 +22,8 @@ class Game {
   private clock: THREE.Clock;
   private controls: OrbitControls;
   private animationActions: THREE.AnimationAction[] = []
+  private pointer: Pointer;
+  private ui: Ui;
   torus: THREE.Mesh;
 
   constructor() {
@@ -33,6 +37,8 @@ class Game {
     this.camera = this.init_camera();
     this.sun = this.init_sun();
     this.controls = this.init_controls();
+    this.pointer = new Pointer();
+    this.ui = new Ui(this.pointer);
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
@@ -65,15 +71,34 @@ class Game {
       chick.scale.set(0.05, 0.05, 0.05);
       chick.rotateY(0.5);
 
+      // const mixer = new THREE.AnimationMixer(chick);
+      // const action = mixer.clipAction(gltf.animations[4]);
+      // action.play();
       const chickEntity = this.entityManager.add(
         new Entity(chick)
       );
-
       const action = chickEntity.mixer.clipAction(gltf.animations[4]);
       chickEntity.animateAction.push(action);
       chickEntity.activeAction = chickEntity.animateAction[0];
       chickEntity.activeAction.play();
-      
+      // let chickEntity = new Entity(chick).setUpdate(() => {
+      //   mixer.update(this.clock.getDelta());
+      // });
+      chickEntity.onClick = (event) => {
+        const popup = document.getElementById('popup') as HTMLElement;
+        popup.classList.add('active');
+        const popupTitle = popup?.getElementsByClassName(
+          'popup__header__title'
+        )[0] as HTMLElement;
+        popupTitle.innerHTML = 'Chick - ' + chickEntity.getId();
+        const popupContent = popup?.getElementsByClassName(
+          'popup__body__content'
+        )[0] as HTMLElement;
+        popupContent.innerHTML = 'cluck '.repeat(8);
+        popup.style.left = event.clientX + 'px';
+        popup.style.top = event.clientY + 'px';
+      };
+      this.entityManager.add(chickEntity);
       this.scene.add(chick);
     });
   }
@@ -120,6 +145,8 @@ class Game {
   private animate() {
     requestAnimationFrame(() => this.animate());
     if (!this.running) return;
+    this.controls.update();
+    this.pointer.update(this.camera, this.entityManager.getEntities());
     this.renderer.render(this.scene, this.camera);
     this.entityManager.update(this.clock.getDelta());
   }
@@ -171,7 +198,6 @@ class Game {
 
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }

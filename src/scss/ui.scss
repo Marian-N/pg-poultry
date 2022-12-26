@@ -1,0 +1,42 @@
+.popup {
+  display: none;
+  border-radius: 8px;
+  min-width: 100px;
+  max-width: 240px;
+  padding: 4px 8px;
+  background-color: azure;
+
+  &.active {
+    display: block;
+    position: absolute;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 32px;
+
+    &__title {
+      user-select: none;
+      pointer-events: none;
+      font-family: $ff-permanentMarker;
+      font-weight: bold;
+    }
+
+    &__close {
+      color: red;
+      margin-left: 8px;
+
+      &:hover {
+        cursor: pointer;
+        color: darkred;
+      }
+    }
+  }
+
+  &__body {
+    font-family: $ff-quicksand;
+    font-size: 24px;
+    margin-top: 8px;
+  }
+}

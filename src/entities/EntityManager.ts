@@ -40,6 +40,10 @@ class EntityManager {
     return entity;
   }
 
+  getEntities(): Entity[] {
+    return Object.values(this.entities);
+  }
+
   get(id: number): Entity | undefined {
     return this.entitiesRecord[id];
   }
