@@ -21,7 +21,7 @@ class Game {
   private sun: THREE.DirectionalLight;
   private clock: THREE.Clock;
   private controls: OrbitControls;
-  private animationActions: THREE.AnimationAction[] = []
+  private animationActions: THREE.AnimationAction[] = [];
   private pointer: Pointer;
   private ui: Ui;
   torus: THREE.Mesh;
@@ -74,9 +74,7 @@ class Game {
       // const mixer = new THREE.AnimationMixer(chick);
       // const action = mixer.clipAction(gltf.animations[4]);
       // action.play();
-      const chickEntity = this.entityManager.add(
-        new Entity(chick)
-      );
+      const chickEntity = this.entityManager.add(new Entity(chick));
       const action = chickEntity.mixer.clipAction(gltf.animations[4]);
       chickEntity.animateAction.push(action);
       chickEntity.activeAction = chickEntity.animateAction[0];
