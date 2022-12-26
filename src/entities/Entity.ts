@@ -1,10 +1,16 @@
+import * as THREE from "three";
+
 class Entity {
   private id: string;
-  update?: Function;
+  public animateAction: THREE.AnimationAction[] = [];
+  public activeAction: THREE.AnimationAction;
+  public lastAction: THREE.AnimationAction;
   object: THREE.Object3D;
+  public mixer: THREE.AnimationMixer;
 
   constructor(object: THREE.Object3D) {
     this.object = object;
+    this.mixer = new THREE.AnimationMixer(object);
   }
 
   setId(id: string) {
@@ -19,9 +25,11 @@ class Entity {
    * @param {Function} update - the update function
    * @returns {Entity} - the entity so you can chain the function
    */
-  setUpdate(update: Function) {
-    this.update = update;
-    return this;
+
+  update(time: number) {
+    if (this.mixer) {
+      this.mixer.update(time);
+    }
   }
 }
 

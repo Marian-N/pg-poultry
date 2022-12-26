@@ -2,12 +2,14 @@ import Entity from './Entity';
 
 /** Entity manager stores all entities in map with their id as a key */
 class EntityManager {
-  private entities: Record<string, Entity>;
+  private entitiesRecord: Record<string, Entity>;
+  private entities: Entity[];
   private idCounter: number;
 
   constructor() {
-    this.entities = {};
+    this.entitiesRecord = {};
     this.idCounter = 0;
+    this.entities = [];
   }
 
   private generateUid() {
@@ -27,23 +29,25 @@ class EntityManager {
       id = this.generateUid();
     }
 
-    if (this.entities[id]) {
+    if (this.entitiesRecord[id]) {
       throw new Error(`Entity with id ${id} already exists`);
     }
 
     entity.setId(id);
-    this.entities[id] = entity;
+    this.entitiesRecord[id] = entity;
+    this.entities.push(entity);
+
+    return entity;
   }
 
   get(id: number): Entity | undefined {
-    return this.entities[id];
+    return this.entitiesRecord[id];
   }
 
   /** Update every entity in entity manager */
-  update() {
-    for (let id in this.entities) {
-      const entity = this.entities[id];
-      if (entity.update) entity.update();
+  update(time: number) {
+    for (let entity of this.entities) {
+      if (entity.update) entity.update(time);
     }
   }
 }

@@ -19,6 +19,7 @@ class Game {
   private sun: THREE.DirectionalLight;
   private clock: THREE.Clock;
   private controls: OrbitControls;
+  private animationActions: THREE.AnimationAction[] = []
   torus: THREE.Mesh;
 
   constructor() {
@@ -49,27 +50,30 @@ class Game {
     // this.addSkybox();
     this.addBackground();
     this.addGround();
-    this.addChick();
+    this.addChick(new THREE.Vector3(0, 0, 0));
+    this.addChick(new THREE.Vector3(0, 0, 10));
 
     this.animate();
   }
 
-  private addChick() {
+  private addChick(pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
     const loader = new GLTFLoader();
     loader.load(Chick, (gltf) => {
       const chick = gltf.scene;
-      chick.position.set(0, -5, 30);
+
+      chick.position.set(pos.x, pos.y, pos.z);
       chick.scale.set(0.05, 0.05, 0.05);
       chick.rotateY(0.5);
 
-      const mixer = new THREE.AnimationMixer(chick);
-      const action = mixer.clipAction(gltf.animations[4]);
-      action.play();
-      this.entityManager.add(
-        new Entity(chick).setUpdate(() => {
-          mixer.update(this.clock.getDelta());
-        })
+      const chickEntity = this.entityManager.add(
+        new Entity(chick)
       );
+
+      const action = chickEntity.mixer.clipAction(gltf.animations[4]);
+      chickEntity.animateAction.push(action);
+      chickEntity.activeAction = chickEntity.animateAction[0];
+      chickEntity.activeAction.play();
+      
       this.scene.add(chick);
     });
   }
@@ -117,7 +121,7 @@ class Game {
     requestAnimationFrame(() => this.animate());
     if (!this.running) return;
     this.renderer.render(this.scene, this.camera);
-    this.entityManager.update();
+    this.entityManager.update(this.clock.getDelta());
   }
 
   start() {
