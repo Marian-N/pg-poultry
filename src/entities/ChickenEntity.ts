@@ -72,14 +72,25 @@ class ChickenEntity extends Entity {
   changeModel(model: any) {
     const loader = new GLTFLoader();
     loader.load(model, (gltf) => {
+      // get scene from parent
       const scene = this.object.parent;
+      // create new object
       const newObject = gltf.scene;
+      // copy position, scale and rotation
       newObject.position.copy(this.object.position);
       newObject.scale.copy(this.object.scale);
       newObject.rotation.copy(this.object.rotation);
+      // remove old object and replace with new one
       scene?.remove(this.object);
       this.object = newObject;
+      // clickability
       this.object.userData.isContainer = true;
+      // cast shadow
+      this.object.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+        }
+      });
 
       // scale
       this.object.scale.set(0.06, 0.06, 0.06);
@@ -203,7 +214,7 @@ class ChickenEntity extends Entity {
       }
 
       // update to adult
-      if (this.age > 0 && !this.isAdult) {
+      if (this.age > 2 && !this.isAdult) {
         this.isAdult = true;
         if (this.gender == 'f') this.changeModel(Hen);
         else this.changeModel(Rooster);
