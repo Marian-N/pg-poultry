@@ -4,6 +4,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Hen from '../../resources/models/poultry/Hen.gltf';
 import Rooster from '../../resources/models/poultry/Rooster.gltf';
 
+const radius = 90;
+const angle = 0;
+const x = radius * Math.cos(angle);
+const z = radius * Math.sin(angle);
+
 class ChickenEntity extends Entity {
   private elapsedTimeSec: number = 0;
   private elapsedTime: number = 0;
@@ -148,7 +153,7 @@ class ChickenEntity extends Entity {
    * Do walk animation
    * If out of bounds rotate 180 degrees
    */
-  walk() {
+  walkSquare() {
     const plane = this.object.parent?.getObjectByName('ground') as THREE.Mesh;
     if (plane) {
       const boundingBox = plane.geometry.boundingBox;
@@ -168,6 +173,18 @@ class ChickenEntity extends Entity {
         // Rotate the object 180 degrees around the y-axis
         this.object.rotation.y += Math.PI;
       }
+    }
+
+    const speed = 0.1;
+    let direction = new THREE.Vector3(0, 0, 1);
+
+    this.object.translateOnAxis(direction, speed);
+  }
+
+  walkCircle() {
+    if (this.object.position.length() > radius) {
+      // Rotate the object 180 degrees around the y-axis
+      this.object.rotation.y += Math.PI;
     }
 
     const speed = 0.1;
@@ -240,7 +257,7 @@ class ChickenEntity extends Entity {
 
     // walk
     if (this.activeAction.getClip().name == 'Walk') {
-      this.walk();
+      this.walkCircle();
     }
   }
 }

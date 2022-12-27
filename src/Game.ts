@@ -12,6 +12,7 @@ import Entity from './entities/Entity';
 import ChickenEntity from './entities/ChickenEntity';
 import Pointer from './Pointer';
 import Ui from './Ui';
+import Farm from '../resources/models/farm/Farm.gltf';
 
 class Game {
   private scene: THREE.Scene;
@@ -56,7 +57,8 @@ class Game {
     this.addLight();
     // this.addSkybox();
     this.addBackground();
-    this.addGround();
+    // this.addGround();  // ! delete this line
+    this.addFarm();
     this.addChick(new THREE.Vector3(0, 0, 0), 'm');
     this.addChick(new THREE.Vector3(0, 0, 10), 'f');
 
@@ -119,6 +121,42 @@ class Game {
     this.scene.background = bgTexture;
   }
 
+  private addFarm() {
+    const loader = new GLTFLoader();
+    loader.load(Farm, (gltf) => {
+      // Add the GLTF object to the scene
+      const farm = gltf.scene;
+      const shadowCastObjects = [
+        'tree',
+        'bush',
+        'fence',
+        'house',
+        'barrel',
+        'wooden',
+        'straw',
+        'bucket'
+      ];
+      const shadowReceiveObjects = ['ground', 'Plane', 'grass'];
+      farm.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          console.log(child);
+          // child.receiveShadow = true;
+          if (shadowCastObjects.some((name) => child.name.includes(name))) {
+            child.castShadow = true;
+          } else if (
+            shadowReceiveObjects.some((name) => child.name.includes(name))
+          ) {
+            child.receiveShadow = true;
+          }
+        }
+      });
+      farm.scale.set(1.5, 1.5, 1.5);
+      farm.position.set(-30, 0, 0);
+
+      this.scene.add(farm);
+    });
+  }
+
   private addGround() {
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(150, 150),
@@ -138,7 +176,7 @@ class Game {
   }
 
   private addLight() {
-    const light = new THREE.AmbientLight(0x404040, 0.2); // soft white light
+    const light = new THREE.AmbientLight(0x404040, 0.5); // soft white light
     this.scene.add(light);
   }
 
@@ -184,16 +222,18 @@ class Game {
     const sun = new THREE.DirectionalLight(0xf4e99b, 1);
     sun.castShadow = true;
     sun.shadow.camera = new THREE.OrthographicCamera(
-      -100,
-      100,
-      100,
-      -100,
+      -500,
+      500,
+      500,
+      -500,
       0.5,
       1000
     );
-    sun.shadow.mapSize.x = 2048;
-    sun.shadow.mapSize.y = 2048;
-    sun.position.set(0, 200, 200);
+    sun.shadow.mapSize.x = 8192;
+    sun.shadow.mapSize.y = 8192;
+    sun.position.set(100, 200, -100);
+    sun.target.position.set(0, 0, 0);
+    // DEBUG
     // var shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
     // this.scene.add(shadowHelper);
     // const helper = new THREE.DirectionalLightHelper(sun);
