@@ -43,6 +43,16 @@
     color: rgba(white, 0.9);
     background-color: $sketch-color;
 
+    & > [class^='ci-'],
+    [class*=' ci-'] {
+      float: right;
+      background-color: white;
+    }
+
+    & > .bi {
+      float: right;
+    }
+
     &.active {
       border-color: white;
       color: white;
