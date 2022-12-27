@@ -74,4 +74,18 @@
     display: flex;
     flex-direction: column;
   }
+
+  &__pages {
+    margin-right: 24px;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__page {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
 }

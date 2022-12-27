@@ -24,7 +24,6 @@ class Popup {
     const popupContent = popup?.getElementsByClassName(
       'popup__body__content'
     )[0] as HTMLElement;
-
     this.element = popup;
     this.closeButton = closeButton;
     this.title = popupTitle;
@@ -38,9 +37,11 @@ class Shop {
   public element: HTMLElement;
   public openButton: HTMLElement;
   public closeButton: HTMLElement;
-  public tabs: Record<ShopTab, HTMLElement>;
-  public isOpen: boolean;
+  private tabs: Record<ShopTab, HTMLElement>;
   private _activeTab: ShopTab;
+  private pages: Record<ShopTab, HTMLElement>;
+
+  public isOpen: boolean;
 
   get activeTab() {
     return this._activeTab;
@@ -49,8 +50,10 @@ class Shop {
   set activeTab(tab: ShopTab) {
     if (this.activeTab && tab) {
       this.tabs[this.activeTab].classList.remove('active');
+      this.pages[this.activeTab].classList.remove('active');
     }
     this.tabs[tab].classList.add('active');
+    this.pages[tab].classList.add('active');
     this._activeTab = tab;
   }
 
@@ -78,14 +81,20 @@ class Shop {
       'shop__close'
     )[0] as HTMLElement;
     const openButton = document.getElementById('open-shop') as HTMLElement;
-    const tabs = {
-      poultry: shop?.getElementsByClassName(
-        'shop__tab--poultry'
-      )[0] as HTMLElement,
-      eggs: shop?.getElementsByClassName('shop__tab--eggs')[0] as HTMLElement,
-      food: shop?.getElementsByClassName('shop__tab--food')[0] as HTMLElement
+    this.tabs = {
+      poultry: shop?.querySelector(
+        '.shop__tab[data-tab="poultry"]'
+      ) as HTMLElement,
+      eggs: shop?.querySelector('.shop__tab[data-tab="eggs"]') as HTMLElement,
+      food: shop?.querySelector('.shop__tab[data-tab="food"]') as HTMLElement
     };
-    this.tabs = tabs;
+    this.pages = {
+      poultry: shop?.querySelector(
+        '.shop__page[data-page="poultry"]'
+      ) as HTMLElement,
+      eggs: shop?.querySelector('.shop__page[data-page="eggs"]') as HTMLElement,
+      food: shop?.querySelector('.shop__page[data-page="food"]') as HTMLElement
+    };
     this.activeTab = 'poultry';
     this.element = shop;
     this.closeButton = closeButton;
