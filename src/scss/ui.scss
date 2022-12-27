@@ -1,2 +1,12 @@
 @import 'popup.scss';
 @import 'hud.scss';
+@import 'shop.scss';
+
+.close-button {
+  color: gray;
+
+  &:hover {
+    cursor: pointer;
+    color: darkred;
+  }
+}

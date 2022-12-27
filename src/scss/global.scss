@@ -4,7 +4,7 @@ body {
 }
 
 .sketch-border {
-  border: solid 4px #41403e;
+  border: solid 4px $sketch-color;
   border-top-left-radius: 255px 15px;
   border-top-right-radius: 15px 225px;
   border-bottom-right-radius: 225px 15px;
@@ -16,4 +16,17 @@ body {
     cursor: pointer;
     box-shadow: 2px 8px 4px -6px hsla(0, 0%, 0%, 0.3);
   }
+}
+
+.sketch-line {
+  border: none;
+  height: 3px;
+  position: relative;
+  margin: 0.5em -0.2em;
+  background: linear-gradient(
+    to right,
+    transparent 1%,
+    $sketch-color 10% 90%,
+    transparent 99%
+  );
 }
