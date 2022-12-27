@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import Entity from './Entity';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import Hen from '../../resources/models/poultry/Hen.gltf';
+import Rooster from '../../resources/models/poultry/Rooster.gltf';
 
 class ChickenEntity extends Entity {
   private elapsedTimeSec: number = 0;
@@ -8,6 +11,7 @@ class ChickenEntity extends Entity {
   private healthDecayTimer: number = 0;
   public gender: string; // m/f - random
   public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
+  private isAdult: boolean = false;
   public food: number; // 0-100 - 100 is full, 0 survives 30s then dies
   public care: number; // 0-100 - aritmetic mean of food, water and care
   public health: number; // 0-100 - on 0 food or 0 water starts to decrease after 30s; on age > 10 starts to decrease,
@@ -62,11 +66,103 @@ class ChickenEntity extends Entity {
   }
 
   /**
+   * Change model to adult
+   * Change mixer to adult animation
+   */
+  changeModel(model: any) {
+    const loader = new GLTFLoader();
+    loader.load(model, (gltf) => {
+      const scene = this.object.parent;
+      const newObject = gltf.scene;
+      newObject.position.copy(this.object.position);
+      newObject.scale.copy(this.object.scale);
+      newObject.rotation.copy(this.object.rotation);
+      scene?.remove(this.object);
+      this.object = newObject;
+      this.object.userData.isContainer = true;
+
+      // scale
+      this.object.scale.set(0.06, 0.06, 0.06);
+
+      // animation
+      this.mixer = new THREE.AnimationMixer(newObject);
+      // get all available animations
+      const animations = gltf.animations;
+      this.animationActions = [];
+      // Iterate over the animations and push them into the animationActions array
+      for (let i = 0; i < animations.length; i++) {
+        const animation = animations[i];
+        this.animationActions.push(this.mixer.clipAction(animation));
+      }
+      const animationClip = gltf.animations.find(
+        (animation) => animation.name === this.activeAction.getClip().name
+      );
+      if (animationClip) {
+        const action = this.mixer.clipAction(animationClip);
+        action.play();
+      }
+
+      // add to scene
+      scene?.add(newObject);
+    });
+  }
+
+  /**
    * Update care every second
    * Aritmetic mean of food and care
    */
   updateCareStat() {
     this.care = (this.food + this.care) / 2;
+  }
+
+  /**
+   *
+   * @param animationName
+   *
+   * Change animation to animationName
+   */
+  changeAnimation(animationName: string) {
+    const animationAction = this.animationActions.find(
+      (action) => action.getClip().name === animationName
+    );
+    if (animationAction) {
+      this.lastAction = this.activeAction;
+      this.activeAction = animationAction;
+      this.mixer.stopAllAction();
+      animationAction?.play();
+    }
+  }
+
+  /**
+   * Do walk animation
+   * If out of bounds rotate 180 degrees
+   */
+  walk() {
+    const plane = this.object.parent?.getObjectByName('ground') as THREE.Mesh;
+    if (plane) {
+      const boundingBox = plane.geometry.boundingBox;
+
+      const minX = boundingBox ? boundingBox.min.x : 0;
+      const maxX = boundingBox ? boundingBox.max.x : 0;
+      const minZ = boundingBox ? boundingBox.min.y : 0;
+      const maxZ = boundingBox ? boundingBox.max.y : 0;
+
+      // Check if the this.object has moved outside the boundaries
+      if (
+        this.object.position.x < minX + 5 ||
+        this.object.position.x > maxX - 5 ||
+        this.object.position.z < minZ + 5 ||
+        this.object.position.z > maxZ - 5
+      ) {
+        // Rotate the object 180 degrees around the y-axis
+        this.object.rotation.y += Math.PI;
+      }
+    }
+
+    const speed = 0.1;
+    let direction = new THREE.Vector3(0, 0, 1);
+
+    this.object.translateOnAxis(direction, speed);
   }
 
   update(time: number) {
@@ -78,18 +174,39 @@ class ChickenEntity extends Entity {
       this.elapsedTimeSec = Math.floor(this.elapsedTime);
       // update food
       this.updateFoodStat();
+      // update health
       this.updateHealth();
+
+      // update stats every 5s
+      if (this.elapsedTimeSec % 5 == 0 && this.elapsedTimeSec != 0) {
+        // update animation - idle 20% chance / walk 60% chance / peck 20% chance
+        const random = Math.random();
+        if (random < 0.2) {
+          this.changeAnimation('Idle');
+        } else if (random < 0.8) {
+          this.changeAnimation('Walk');
+          this.object.rotation.y = (Math.random() * 2 - 1) * Math.PI;
+        } else {
+          this.changeAnimation('Peck');
+        }
+      }
 
       // update stats every 10s
       if (this.elapsedTimeSec % 10 == 0 && this.elapsedTimeSec != 0) {
         // update care
         this.updateCareStat();
-        console.log(this);
       }
 
       // lay egg every 30s
       if (this.elapsedTimeSec % 30 == 0 && this.elapsedTimeSec != 0) {
         // TODO lay egg
+      }
+
+      // update to adult
+      if (this.age > 0 && !this.isAdult) {
+        this.isAdult = true;
+        if (this.gender == 'f') this.changeModel(Hen);
+        else this.changeModel(Rooster);
       }
     }
 
@@ -108,6 +225,11 @@ class ChickenEntity extends Entity {
       } else {
         this.eggLayer = false;
       }
+    }
+
+    // walk
+    if (this.activeAction.getClip().name == 'Walk') {
+      this.walk();
     }
   }
 }

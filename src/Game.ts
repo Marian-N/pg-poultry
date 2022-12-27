@@ -57,13 +57,16 @@ class Game {
     // this.addSkybox();
     this.addBackground();
     this.addGround();
-    this.addChick(new THREE.Vector3(0, 0, 0));
-    this.addChick(new THREE.Vector3(0, 0, 10));
+    this.addChick(new THREE.Vector3(0, 0, 0), 'm');
+    this.addChick(new THREE.Vector3(0, 0, 10), 'f');
 
     this.animate();
   }
 
-  private addChick(pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
+  private addChick(
+    pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
+    gender: string
+  ) {
     const loader = new GLTFLoader();
     loader.load(Chick, (gltf) => {
       const chick = gltf.scene;
@@ -72,17 +75,19 @@ class Game {
       chick.scale.set(0.05, 0.05, 0.05);
       chick.rotateY(0.5);
 
-      // const mixer = new THREE.AnimationMixer(chick);
-      // const action = mixer.clipAction(gltf.animations[4]);
-      // action.play();
-      const chickEntity = this.entityManager.add(new ChickenEntity(chick));
-      const action = chickEntity.mixer.clipAction(gltf.animations[4]);
-      chickEntity.animateAction.push(action);
-      chickEntity.activeAction = chickEntity.animateAction[0];
-      chickEntity.activeAction.play();
-      // let chickEntity = new Entity(chick).setUpdate(() => {
-      //   mixer.update(this.clock.getDelta());
-      // });
+      const chickEntity = this.entityManager.add(
+        new ChickenEntity(chick, gender)
+      ) as ChickenEntity;
+      // get all available animations
+      const animations = gltf.animations;
+      // Iterate over the animations and push them into the animationActions array
+      for (let i = 0; i < animations.length; i++) {
+        const animation = animations[i];
+        chickEntity.animationActions.push(
+          chickEntity.mixer.clipAction(animation)
+        );
+      }
+      chickEntity.changeAnimation('Idle');
       chickEntity.onClick = (event) => {
         const popup = this.ui.popup;
         popup.element.classList.add('active');
@@ -116,7 +121,7 @@ class Game {
 
   private addGround() {
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(1000, 1000),
+      new THREE.PlaneGeometry(150, 150),
       new THREE.MeshPhongMaterial({
         color: 0x50c878, // color of the ground
         side: THREE.DoubleSide, // render from both sides of the plane
@@ -125,8 +130,11 @@ class Game {
         shininess: 10 // how shiny the reflection is
       })
     );
+    ground.receiveShadow = true;
+    ground.name = 'ground';
     ground.rotation.x = -Math.PI / 2;
     this.scene.add(ground);
+    ground.geometry.computeBoundingBox();
   }
 
   private addLight() {
@@ -153,6 +161,8 @@ class Game {
 
   private init_renderer(): THREE.WebGLRenderer {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     return renderer;
@@ -171,8 +181,23 @@ class Game {
   }
 
   private init_sun() {
-    const sun = new THREE.DirectionalLight(0xf4e99b, 1.0);
-    sun.position.set(0, 1, 1);
+    const sun = new THREE.DirectionalLight(0xf4e99b, 1);
+    sun.castShadow = true;
+    sun.shadow.camera = new THREE.OrthographicCamera(
+      -100,
+      100,
+      100,
+      -100,
+      0.5,
+      1000
+    );
+    sun.shadow.mapSize.x = 2048;
+    sun.shadow.mapSize.y = 2048;
+    sun.position.set(0, 200, 200);
+    // var shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
+    // this.scene.add(shadowHelper);
+    // const helper = new THREE.DirectionalLightHelper(sun);
+    // this.scene.add(helper);
     return sun;
   }
 

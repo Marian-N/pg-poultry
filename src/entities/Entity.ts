@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 class Entity {
   private id: string;
-  public animateAction: THREE.AnimationAction[] = [];
+  public animationActions: THREE.AnimationAction[] = [];
   public activeAction: THREE.AnimationAction;
   public lastAction: THREE.AnimationAction;
   object: THREE.Object3D;
@@ -12,6 +12,11 @@ class Entity {
     this.object = object;
     this.mixer = new THREE.AnimationMixer(object);
     object.userData.isContainer = true;
+    object.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true;
+      }
+    });
   }
 
   onClick?: (event: MouseEvent) => void;

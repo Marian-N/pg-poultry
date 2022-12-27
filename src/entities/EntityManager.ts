@@ -44,7 +44,7 @@ class EntityManager {
     return Object.values(this.entities);
   }
 
-  get(id: number): Entity | undefined {
+  get(id: string): Entity | undefined {
     return this.entitiesRecord[id];
   }
 
