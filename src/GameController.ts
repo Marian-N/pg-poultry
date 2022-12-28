@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
 
-type Action = 'feedPoultry' | 'sellPoultry';
+type Action = 'feedPoultry' | 'sellPoultry' | 'buyFood' | 'sellFood';
 type Payload = {
   entity?: Entity;
   value?: number;

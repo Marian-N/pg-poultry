@@ -2,6 +2,8 @@ import Entity from './entities/Entity';
 import { gameController } from './globals';
 import Pointer from './Pointer';
 
+const dollarIcon = '<i class="bi bi-currency-dollar"></i>';
+
 class Popup {
   public element: HTMLElement;
   public closeButton: HTMLElement;
@@ -145,6 +147,61 @@ class Hud {
 
 type ShopTab = 'poultry' | 'eggs' | 'food';
 
+class ShopPageItem {
+  public element: HTMLElement;
+  public buyButton?: HTMLElement;
+  public sellButton?: HTMLElement;
+  public value: number;
+
+  constructor(element: HTMLElement) {
+    this.init(element);
+
+    if (this.buyButton) {
+      this.buyButton.innerHTML = `Buy ${dollarIcon}${this.value}`;
+      this.buyButton.addEventListener('click', () => {
+        gameController.onAction('buyFood', { value: this.value });
+      });
+    }
+    if (this.sellButton) {
+      const value = this.value / 2;
+      this.sellButton.innerHTML = `Sell ${dollarIcon}${value}`;
+      this.sellButton.addEventListener('click', () => {
+        gameController.onAction('sellFood', { value });
+      });
+    }
+  }
+
+  private init(element: HTMLElement) {
+    this.element = element;
+    this.buyButton = element.querySelector(
+      '.button[data-action="buy"]'
+    ) as HTMLElement;
+    this.sellButton = element.querySelector(
+      '.button[data-action="sell"]'
+    ) as HTMLElement;
+    this.value = parseInt(
+      element
+        .querySelector('.button-group')
+        ?.getAttribute('data-value') as string
+    );
+  }
+}
+
+class ShopPage {
+  public element: HTMLElement;
+  public items: ShopPageItem[];
+
+  constructor(element: HTMLElement) {
+    this.element = element;
+
+    const items = this.element.getElementsByClassName('shop__item');
+    this.items = [];
+    for (let i = 0; i < items.length; i++) {
+      this.items.push(new ShopPageItem(items[i] as HTMLElement));
+    }
+  }
+}
+
 class Shop {
   public element: HTMLElement;
   public openButton: HTMLElement;
@@ -152,7 +209,7 @@ class Shop {
   public money: HTMLElement;
   private tabs: Record<ShopTab, HTMLElement>;
   private _activeTab: ShopTab;
-  private pages: Record<ShopTab, HTMLElement>;
+  private pages: Record<ShopTab, ShopPage>;
 
   public isOpen: boolean;
 
@@ -163,10 +220,10 @@ class Shop {
   set activeTab(tab: ShopTab) {
     if (this.activeTab && tab) {
       this.tabs[this.activeTab].classList.remove('active');
-      this.pages[this.activeTab].classList.remove('active');
+      this.pages[this.activeTab].element.classList.remove('active');
     }
     this.tabs[tab].classList.add('active');
-    this.pages[tab].classList.add('active');
+    this.pages[tab].element.classList.add('active');
     this._activeTab = tab;
   }
 
@@ -202,11 +259,15 @@ class Shop {
       food: shop?.querySelector('.shop__tab[data-tab="food"]') as HTMLElement
     };
     this.pages = {
-      poultry: shop?.querySelector(
-        '.shop__page[data-page="poultry"]'
-      ) as HTMLElement,
-      eggs: shop?.querySelector('.shop__page[data-page="eggs"]') as HTMLElement,
-      food: shop?.querySelector('.shop__page[data-page="food"]') as HTMLElement
+      poultry: new ShopPage(
+        shop?.querySelector('.shop__page[data-page="poultry"]') as HTMLElement
+      ),
+      eggs: new ShopPage(
+        shop?.querySelector('.shop__page[data-page="eggs"]') as HTMLElement
+      ),
+      food: new ShopPage(
+        shop?.querySelector('.shop__page[data-page="food"]') as HTMLElement
+      )
     };
     this.activeTab = 'poultry';
     this.element = shop;
