@@ -290,6 +290,7 @@ class ChickenEntity extends Entity {
         // update animation - idle 20% chance / walk 60% chance / peck 20% chance
         const random = Math.random();
         if (!this.isDead) {
+          // TODO fear animation probability 0.8 if health < 20%
           if (random < 0.2) {
             this.changeAnimation('Idle');
           } else if (random < 0.8) {
@@ -309,14 +310,14 @@ class ChickenEntity extends Entity {
 
       // lay egg every 30s
       if (this.elapsedTimeSec % 30 == 0 && this.elapsedTimeSec != 0) {
-        if (this.eggLayer) {
+        if (this.eggLayer && !this.isDead) {
           this.toggleEggLayer();
           if (this.eggLayer) this.layEgg();
         }
       }
 
       // update to adult
-      if (this.age > 2 && !this.isAdult) {
+      if (this.age > 2 && !this.isAdult && !this.isDead) {
         this.isAdult = true;
         if (this.gender == 'f') this.changeModel(Hen);
         else this.changeModel(Rooster);
@@ -337,7 +338,7 @@ class ChickenEntity extends Entity {
     }
 
     // death
-    if (this.health <= 0) {
+    if (this.health <= 0 && !this.isDead) {
       this.die();
     }
   }
