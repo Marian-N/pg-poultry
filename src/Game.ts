@@ -109,10 +109,17 @@ class Game {
       const shadowReceiveObjects = ['ground', 'Plane', 'grass'];
       farm.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
-          if (shadowCastObjects.some((name) => child.name.includes(name))) {
+          if (
+            shadowCastObjects.some((name) => child.name.includes(name)) &&
+            child.name !== 'treepPlane3_treeleaf_0'
+          ) {
             child.castShadow = true;
           } else if (
-            shadowReceiveObjects.some((name) => child.name.includes(name))
+            shadowReceiveObjects.some(
+              (name) =>
+                child.name.includes(name) ||
+                child.name === 'treepPlane3_treeleaf_0'
+            )
           ) {
             child.receiveShadow = true;
           }
