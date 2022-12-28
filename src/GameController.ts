@@ -97,6 +97,17 @@ class GameController {
     }
   }
 
+  /**
+   * Creates chicken and adds it to scene
+   * Remove egg from stats
+   */
+  private hatchEgg() {
+    if (stats.eggs > 0) {
+      this.createChicken();
+      stats.eggs -= 1;
+    }
+  }
+
   onAction(action: Action, payload: Payload = {}) {
     // TODO action response - failure, success - UI
     console.log(action, payload);
@@ -123,6 +134,9 @@ class GameController {
     }
     if (action === 'sellEggs' && value) {
       this.sellEggs(value);
+    }
+    if (action === 'hatchEgg') {
+      this.hatchEgg();
     }
   }
 
