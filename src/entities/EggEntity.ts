@@ -10,9 +10,7 @@ class EggEntity extends Entity {
     super(object);
 
     this.onClick = () => {
-      // TODO when egg hatching is implemented, remove create and uncomment stats
-      // stats.eggs += 1;
-      gameController.createChicken();
+      stats.eggs += 1;
       this.destroy();
     };
   }
