@@ -265,7 +265,6 @@ class ChickenEntity extends Entity {
 
       // lay egg every 30s
       if (this.elapsedTimeSec % 30 == 0 && this.elapsedTimeSec != 0) {
-        console.log(this);
         if (this.eggLayer) {
           this.toggleEggLayer();
           if (this.eggLayer) this.layEgg();
