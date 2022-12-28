@@ -14,9 +14,9 @@ const x = radius * Math.cos(angle);
 const z = radius * Math.sin(angle);
 
 class ChickenEntity extends Entity {
-  private healthDecayTimer: number = 0;
+  private healthDecayTimer: number = 10;
   public gender: string; // m/f - random
-  public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death) //TODO implement death at old age
+  public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
   private isAdult: boolean = false;
   public food: number; // 0-100 - 100 is full, 0 survives 30s then dies
   public care: number; // 0-100 - aritmetic mean of food, water and care
@@ -43,10 +43,20 @@ class ChickenEntity extends Entity {
   /**
    * Update food every second by 0.5
    * If food is 0 start decrease health timer
+   * If it includes parameters to increase food, increase food by that number
    */
-  updateFoodStat() {
-    if (this.food > 0) {
-      this.food -= 0.5;
+  updateFoodStat(increase?: boolean, increaseNumber?: number) {
+    if (!increase) {
+      if (this.food > 0) {
+        this.food -= 0.5;
+      }
+    }
+    if (increase && increaseNumber) {
+      if (this.food <= 100 - increaseNumber) {
+        this.food += increaseNumber;
+      } else {
+        this.food = 100;
+      }
     }
   }
 
@@ -59,12 +69,12 @@ class ChickenEntity extends Entity {
    */
   updateHealth() {
     if (this.food == 0) {
-      this.healthDecayTimer += 1;
+      this.healthDecayTimer -= 1;
     } else {
-      this.healthDecayTimer = 0;
+      this.healthDecayTimer = 10;
     }
 
-    if (this.healthDecayTimer >= 30 && this.health > 0) {
+    if (this.healthDecayTimer <= 0 && this.health > 0) {
       this.health -= 1;
     }
 
