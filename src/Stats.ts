@@ -1,4 +1,5 @@
 import { ui } from './globals';
+import { IHudUpdateValues } from './Ui';
 
 class Stats {
   private _eggs: number;
@@ -42,13 +43,25 @@ class Stats {
     ui.hud.money = value;
   }
 
+  update(values: IHudUpdateValues) {
+    if (values.poultry !== undefined) {
+      this.poultry = values.poultry;
+    }
+    if (values.eggs !== undefined) {
+      this.eggs = values.eggs;
+    }
+    if (values.food !== undefined) {
+      this.food = values.food;
+    }
+    if (values.money !== undefined) {
+      this.money = values.money;
+    }
+  }
+
   constructor() {}
 
-  public init() {
-    this.eggs = 0;
-    this.food = 0;
-    this.poultry = 0;
-    this.money = 0;
+  public init(values?: IHudUpdateValues) {
+    if (values) this.update(values);
 
     return this;
   }

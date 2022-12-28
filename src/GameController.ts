@@ -3,9 +3,21 @@ import ChickenEntity from './entities/ChickenEntity';
 import Chick from '../resources/models/poultry/Chick.gltf';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { entityManager, scene, ui, stats } from './globals';
+import Entity from './entities/Entity';
+
+type Action = 'feedPoultry' | 'sellPoultry';
 
 class GameController {
   constructor() {}
+
+  onAction(action: Action, entity: Entity) {
+    console.log(action);
+    if (action === 'feedPoultry') {
+      if (entity instanceof ChickenEntity) {
+        console.log('chicken');
+      }
+    }
+  }
 
   createChicken(pos?: THREE.Vector3, gender?: string, age?: number) {
     const loader = new GLTFLoader();
@@ -32,6 +44,7 @@ class GameController {
       chickEntity.changeAnimation('Idle');
       chickEntity.onClick = (event) => {
         const popup = ui.popup;
+        popup.entity = chickEntity;
         chickEntity.playAnimationOnce('Clicked');
         popup.element.classList.add('active');
         popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
