@@ -15,6 +15,7 @@ import Ui from './Ui';
 import Farm from '../resources/models/farm/Farm.gltf';
 import { entityManager, scene, stats, ui, gameController } from './globals';
 import Stats from './Stats';
+import GameController from './gameController';
 
 class Game {
   private scene: THREE.Scene;
@@ -29,6 +30,7 @@ class Game {
   private pointer: Pointer;
   private ui: Ui;
   private stats: Stats;
+  private gameController: GameController;
   torus: THREE.Mesh;
 
   constructor() {
@@ -50,6 +52,7 @@ class Game {
       food: 100,
       money: 50
     });
+    this.gameController = gameController;
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
@@ -63,8 +66,8 @@ class Game {
     // this.addGround();  // ! delete this line
     this.addFarm();
 
-    gameController.createChicken(new THREE.Vector3(0, 0, 0), 'm', 3);
-    gameController.createChicken(new THREE.Vector3(0, 0, 10), 'f', 3);
+    this.gameController.createChicken(new THREE.Vector3(0, 0, 0), 'm', 3);
+    this.gameController.createChicken(new THREE.Vector3(0, 0, 10), 'f', 3);
 
     this.animate();
   }
