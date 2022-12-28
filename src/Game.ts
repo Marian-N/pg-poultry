@@ -96,6 +96,7 @@ class Game {
       chickEntity.changeAnimation('Idle');
       chickEntity.onClick = (event) => {
         const popup = this.ui.popup;
+        chickEntity.playAnimationOnce('Clicked');
         popup.element.classList.add('active');
         popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
         popup.content.innerHTML = `

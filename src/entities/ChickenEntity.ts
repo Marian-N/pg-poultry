@@ -214,8 +214,8 @@ class ChickenEntity extends Entity {
       scene.add(egg);
       const eggEntity = new EggEntity(egg);
       entityManager.add(eggEntity);
-      //TODO play animation once and then continue previous animation
-      this.changeAnimation('Jump');
+      // this.changeAnimation('Jump');
+      this.playAnimationOnce('Jump');
     });
   }
 
@@ -232,6 +232,27 @@ class ChickenEntity extends Entity {
       }
     } else {
       this.eggLayer = false;
+    }
+  }
+
+  /**
+   * Play animation once, then return to active animation
+   */
+  playAnimationOnce(animationName: string) {
+    const animationAction = this.animationActions.find(
+      (action) => action.getClip().name === animationName
+    );
+    if (animationAction) {
+      this.lastAction = this.activeAction;
+      this.activeAction = animationAction;
+      animationAction?.setLoop(THREE.LoopOnce, 1);
+      animationAction.clampWhenFinished = true;
+      this.lastAction.fadeOut(0.5);
+      animationAction.reset().fadeIn(0.5).play();
+
+      this.activeAction = this.lastAction;
+      animationAction?.fadeOut(0.5);
+      this.lastAction.reset().fadeIn(0.5).play();
     }
   }
 
