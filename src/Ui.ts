@@ -89,6 +89,10 @@ class Hud {
     this.$eggs = [eggs];
     this.$food = [food];
     this.$money = [money];
+
+    eggs.addEventListener('click', () => {
+      gameController.onAction('hatchEgg');
+    });
   }
 
   get poultry() {
