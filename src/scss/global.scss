@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  overflow: hidden;
   font-family: $ff-quicksand;
 }
 
@@ -11,7 +12,24 @@ body {
   border-bottom-left-radius: 15px 255px;
 }
 
+.button {
+  background-color: $sketch-color;
+  color: white;
+  font-weight: bold;
+  font-family: $ff-marhey;
+  font-size: inherit;
+  padding: 0.5em 1em;
+  text-transform: uppercase;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 2px 8px 4px -6px hsla(0, 0%, 0%, 0.3);
+    background-color: rgba($sketch-color, 0.8);
+  }
+}
+
 .sketch-button {
+  @extend .sketch-border;
   &:hover {
     cursor: pointer;
     box-shadow: 2px 8px 4px -6px hsla(0, 0%, 0%, 0.3);

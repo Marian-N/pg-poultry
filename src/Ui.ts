@@ -1,3 +1,5 @@
+import Entity from './entities/Entity';
+import { gameController } from './globals';
 import Pointer from './Pointer';
 
 class Popup {
@@ -5,11 +7,20 @@ class Popup {
   public closeButton: HTMLElement;
   public title: HTMLElement;
   public content: HTMLElement;
+  public sellButton: HTMLElement;
+  public feedButton: HTMLElement;
+  public entity: Entity;
 
   constructor() {
     this.init();
     this.closeButton.addEventListener('click', () => {
       this.element.classList.remove('active');
+    });
+    this.sellButton.addEventListener('click', () => {
+      gameController.onAction('sellPoultry', this.entity);
+    });
+    this.feedButton.addEventListener('click', () => {
+      gameController.onAction('feedPoultry', this.entity);
     });
   }
 
@@ -24,6 +35,12 @@ class Popup {
     const popupContent = popup?.getElementsByClassName(
       'popup__body__content'
     )[0] as HTMLElement;
+    this.sellButton = popup?.querySelector(
+      '.button[data-action="sell"]'
+    ) as HTMLElement;
+    this.feedButton = popup?.querySelector(
+      '.button[data-action="feed"]'
+    ) as HTMLElement;
     this.element = popup;
     this.closeButton = closeButton;
     this.title = popupTitle;
@@ -31,7 +48,7 @@ class Popup {
   }
 }
 
-interface IHudUpdateValues {
+export interface IHudUpdateValues {
   poultry?: number;
   eggs?: number;
   food?: number;

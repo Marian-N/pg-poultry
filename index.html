@@ -74,7 +74,11 @@
     </div>
 
     <!-- On click popup -->
-    <div id="popup" class="popup">
+    <div
+      id="popup"
+      class="popup"
+      oncontextmenu="javascript:event.stopPropagation();return false;"
+    >
       <div class="popup__header">
         <div class="popup__header__title"></div>
         <div class="popup__close close-button">
@@ -83,6 +87,10 @@
       </div>
       <div class="popup__body">
         <div class="popup__body__content"></div>
+      </div>
+      <div class="popup__footer">
+        <button class="button sketch-button" data-action="feed">feed</button>
+        <button class="button sketch-button" data-action="sell">sell</button>
       </div>
     </div>
 

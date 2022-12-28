@@ -44,19 +44,18 @@ class Game {
     this.controls = this.init_controls();
     this.pointer = new Pointer();
     this.ui = ui.init(this.pointer);
-    this.stats = stats.init();
+    this.stats = stats.init({
+      poultry: 0,
+      eggs: 0,
+      food: 100,
+      money: 50
+    });
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
     this.entityManager = entityManager;
     document.body.appendChild(this.renderer.domElement);
-    window.addEventListener(
-      'resize',
-      () => {
-        this.onWindowResize();
-      },
-      false
-    );
+    this.addEventListeners();
 
     this.addLight();
     // this.addSkybox();
@@ -219,9 +218,36 @@ class Game {
     return controls;
   }
 
+  private addEventListeners() {
+    window.addEventListener(
+      'resize',
+      () => {
+        this.onWindowResize();
+      },
+      false
+    );
+    window.addEventListener('mousewheel', () => {
+      this.onWindowScroll();
+    });
+    window.addEventListener('contextmenu', (event: MouseEvent) => {
+      this.onWindowRightClick(event);
+      return false;
+    });
+  }
+
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  private onWindowRightClick(event: MouseEvent) {
+    event.preventDefault();
+    this.ui.popup.element.classList.remove('active');
+  }
+
+  private onWindowScroll() {
+    this.ui.popup.element.classList.remove('active');
   }
 }
 
