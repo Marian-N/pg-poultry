@@ -1,6 +1,6 @@
 import ChickenEntity from './entities/ChickenEntity';
 import Entity from './entities/Entity';
-import { priceMultiplier, ShopTransactionAction } from './gameController';
+import { priceMultiplier, ShopTransactionAction } from './GameController';
 import { gameController } from './globals';
 import Pointer from './Pointer';
 
