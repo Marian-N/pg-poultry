@@ -12,7 +12,7 @@ export type ShopTransactionAction =
   | 'sellFood'
   | 'buyPoultry'
   | 'sellPoultry';
-export type GameAction = 'feedPoultry';
+export type GameAction = 'feedPoultry' | 'hatchEgg';
 export type Action = ShopTransactionAction | GameAction;
 export type Payload = {
   entity?: Entity;
@@ -73,7 +73,7 @@ class GameController {
     stats.money += price;
   }
 
-  onAction(action: Action, payload: Payload) {
+  onAction(action: Action, payload: Payload = {}) {
     // TODO action response - failure, success - UI
     console.log(action, payload);
     const { entity, value } = payload;
