@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Entity from './Entity';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { entityManager, scene, stats } from '../globals';
+import { entityManager, scene, stats, gameController } from '../globals';
 
 class EggEntity extends Entity {
   private timespan: number = 30; // is destroyed after 30 seconds
@@ -10,7 +10,9 @@ class EggEntity extends Entity {
     super(object);
 
     this.onClick = () => {
-      stats.eggs += 1;
+      // TODO when egg hatching is implemented, remove create and uncomment stats
+      // stats.eggs += 1;
+      gameController.createChicken();
       this.destroy();
     };
   }

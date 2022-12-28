@@ -16,7 +16,7 @@ const z = radius * Math.sin(angle);
 class ChickenEntity extends Entity {
   private healthDecayTimer: number = 0;
   public gender: string; // m/f - random
-  public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
+  public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death) //TODO implement death at old age
   private isAdult: boolean = false;
   public food: number; // 0-100 - 100 is full, 0 survives 30s then dies
   public care: number; // 0-100 - aritmetic mean of food, water and care
@@ -56,7 +56,6 @@ class ChickenEntity extends Entity {
    * If health timer reaches 30s start decrease health
    * If food is > 0 start increase health and reset health timer
    * If age is > 10 start decrease health
-   * TODO if health is 0 = death
    */
   updateHealth() {
     if (this.food == 0) {

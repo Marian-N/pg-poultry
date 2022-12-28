@@ -13,7 +13,7 @@ import ChickenEntity from './entities/ChickenEntity';
 import Pointer from './Pointer';
 import Ui from './Ui';
 import Farm from '../resources/models/farm/Farm.gltf';
-import { entityManager, scene, stats, ui } from './globals';
+import { entityManager, scene, stats, ui, gameController } from './globals';
 import Stats from './Stats';
 
 class Game {
@@ -63,66 +63,11 @@ class Game {
     this.addBackground();
     // this.addGround();  // ! delete this line
     this.addFarm();
-    this.addChick(new THREE.Vector3(0, 0, 0), 'm');
-    this.addChick(new THREE.Vector3(0, 0, 10), 'f');
+
+    gameController.createChicken(new THREE.Vector3(0, 0, 0), 'm', 3);
+    gameController.createChicken(new THREE.Vector3(0, 0, 10), 'f', 3);
 
     this.animate();
-  }
-
-  private addChick(
-    pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
-    gender: string
-  ) {
-    const loader = new GLTFLoader();
-    loader.load(Chick, (gltf) => {
-      const chick = gltf.scene;
-
-      chick.position.set(pos.x, pos.y, pos.z);
-      chick.scale.set(0.05, 0.05, 0.05);
-      chick.rotateY(0.5);
-
-      const chickEntity = this.entityManager.add(
-        new ChickenEntity(chick, gender, 3)
-      ) as ChickenEntity;
-      // get all available animations
-      const animations = gltf.animations;
-      // Iterate over the animations and push them into the animationActions array
-      for (let i = 0; i < animations.length; i++) {
-        const animation = animations[i];
-        chickEntity.animationActions.push(
-          chickEntity.mixer.clipAction(animation)
-        );
-      }
-      chickEntity.changeAnimation('Idle');
-      chickEntity.onClick = (event) => {
-        const popup = this.ui.popup;
-        chickEntity.playAnimationOnce('Clicked');
-        popup.element.classList.add('active');
-        popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
-        popup.content.innerHTML = `
-        <table height="100%" width="100%"
-        style="border-spacing: 10px 0;">
-          <tr>
-            <td>Health</td>
-            <td>${chickEntity.health}%</td>
-          </tr>
-          <tr>
-            <td>Food</td>
-            <td>${chickEntity.food}%</td>
-          </tr>
-          <tr>
-            <td>Care</td>
-            <td>${Math.round(chickEntity.care * 100) / 100}%</td>
-          </tr>
-        </table>
-      `;
-        // popup.content.innerHTML = 'cluck '.repeat(8);
-        popup.element.style.left = event.clientX + 'px';
-        popup.element.style.top = event.clientY + 'px';
-      };
-      this.scene.add(chick);
-      this.stats.poultry++;
-    });
   }
 
   private addSkybox() {
