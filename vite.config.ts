@@ -27,6 +27,10 @@ export default defineConfig({
           dest: 'assets/textures'
         },
         {
+          src: 'resources/models/farm/textures/*.png',
+          dest: 'assets/textures'
+        },
+        {
           src: '**/*.bin',
           dest: 'assets'
         }
