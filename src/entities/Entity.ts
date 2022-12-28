@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { entityManager, scene } from '../globals';
 
 class Entity {
   private id: string;
@@ -38,6 +39,11 @@ class Entity {
     if (this.mixer) {
       this.mixer.update(time);
     }
+  }
+
+  destroy() {
+    scene.remove(this.object);
+    entityManager.remove(this);
   }
 
   handleClick(event: MouseEvent) {

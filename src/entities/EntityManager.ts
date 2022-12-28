@@ -48,6 +48,18 @@ class EntityManager {
     return this.entitiesRecord[id];
   }
 
+  removeById(id: string) {
+    const entity = this.entitiesRecord[id];
+    if (entity) {
+      delete this.entitiesRecord[id];
+      this.entities = this.entities.filter((e) => e !== entity);
+    }
+  }
+
+  remove(entity: Entity) {
+    this.removeById(entity.getId());
+  }
+
   /** Update every entity in entity manager */
   update(time: number) {
     for (let entity of this.entities) {

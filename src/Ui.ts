@@ -206,15 +206,15 @@ class Ui {
   public shop: Shop;
   public hud: Hud;
 
-  constructor(pointer: Pointer) {
-    this.pointer = pointer;
-    this.init();
-  }
+  constructor() {}
 
-  private init() {
+  public init(pointer: Pointer) {
+    this.pointer = pointer;
     this.initPopup();
     this.initShop();
     this.initHud();
+
+    return this;
   }
 
   private initPopup() {

@@ -13,6 +13,8 @@ import ChickenEntity from './entities/ChickenEntity';
 import Pointer from './Pointer';
 import Ui from './Ui';
 import Farm from '../resources/models/farm/Farm.gltf';
+import { entityManager, scene, stats, ui } from './globals';
+import Stats from './Stats';
 
 class Game {
   private scene: THREE.Scene;
@@ -26,6 +28,7 @@ class Game {
   private animationActions: THREE.AnimationAction[] = [];
   private pointer: Pointer;
   private ui: Ui;
+  private stats: Stats;
   torus: THREE.Mesh;
 
   constructor() {
@@ -34,17 +37,18 @@ class Game {
   }
 
   private init() {
-    this.scene = new THREE.Scene();
+    this.scene = scene;
     this.renderer = this.init_renderer();
     this.camera = this.init_camera();
     this.sun = this.init_sun();
     this.controls = this.init_controls();
     this.pointer = new Pointer();
-    this.ui = new Ui(this.pointer);
+    this.ui = ui.init(this.pointer);
+    this.stats = stats.init();
     this.scene.add(this.sun);
     this.renderer.render(this.scene, this.camera);
     this.clock = new THREE.Clock();
-    this.entityManager = new EntityManager();
+    this.entityManager = entityManager;
     document.body.appendChild(this.renderer.domElement);
     window.addEventListener(
       'resize',
@@ -99,6 +103,7 @@ class Game {
         popup.element.style.top = event.clientY + 'px';
       };
       this.scene.add(chick);
+      this.stats.poultry++;
     });
   }
 

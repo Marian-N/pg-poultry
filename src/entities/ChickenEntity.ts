@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Hen from '../../resources/models/poultry/Hen.gltf';
 import Rooster from '../../resources/models/poultry/Rooster.gltf';
 import Egg from '../../resources/models/poultry/Egg.gltf';
+import { entityManager, scene, stats } from '../globals';
 
 const radius = 90;
 const angle = 0;
@@ -210,7 +211,13 @@ class ChickenEntity extends Entity {
       egg.position.copy(this.object.position);
       egg.position.y += 1;
       egg.scale.set(5, 5, 5);
-      this.object.parent?.add(egg);
+      scene.add(egg);
+      const eggEntity = new Entity(egg);
+      entityManager.add(eggEntity);
+      eggEntity.onClick = () => {
+        stats.eggs += 1;
+        eggEntity.destroy();
+      };
       //TODO animation chicken laying egg (Bounce or Clicked)
     });
   }
