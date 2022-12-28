@@ -201,7 +201,8 @@ class ChickenEntity extends Entity {
   walkCircle() {
     if (this.object.position.length() > radius) {
       // Rotate the object 180 degrees around the y-axis
-      this.object.rotation.y += Math.PI;
+      // this.object.rotation.y += Math.PI;
+      this.object.lookAt(new THREE.Vector3(0, 0, 0));
     }
 
     const speed = 0.1;
