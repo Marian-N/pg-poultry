@@ -6,6 +6,7 @@ import Rooster from '../../resources/models/poultry/Rooster.gltf';
 import Egg from '../../resources/models/poultry/Egg.gltf';
 import { entityManager, scene, stats } from '../globals';
 import EggEntity from './EggEntity';
+import Stats from '../Stats';
 
 const radius = 90;
 const angle = 0;
@@ -21,6 +22,7 @@ class ChickenEntity extends Entity {
   public care: number; // 0-100 - aritmetic mean of food, water and care
   public health: number; // 0-100 - on 0 food or 0 water starts to decrease after 30s; on age > 10 starts to decrease,
   public eggLayer: boolean; // true/false - f and adult and care > 70
+  private isDead: boolean = false;
 
   constructor(object: THREE.Object3D, gender?: string, age?: number) {
     super(object);
@@ -250,10 +252,25 @@ class ChickenEntity extends Entity {
       this.lastAction.fadeOut(0.5);
       animationAction.reset().fadeIn(0.5).play();
 
-      this.activeAction = this.lastAction;
-      animationAction?.fadeOut(0.5);
-      this.lastAction.reset().fadeIn(0.5).play();
+      if (animationName != 'Death') {
+        this.activeAction = this.lastAction;
+        animationAction?.fadeOut(0.5);
+        this.lastAction.reset().fadeIn(0.5).play();
+      }
     }
+  }
+
+  /**
+   * Takes care of death of object
+   */
+  die() {
+    this.playAnimationOnce('Death');
+    this.isDead = true;
+    setTimeout(() => {
+      this.object.parent?.remove(this.object);
+      entityManager.remove(this);
+      stats.poultry--;
+    }, 2000);
   }
 
   update(time: number) {
@@ -272,14 +289,16 @@ class ChickenEntity extends Entity {
       if (this.elapsedTimeSec % 5 == 0 && this.elapsedTimeSec != 0) {
         // update animation - idle 20% chance / walk 60% chance / peck 20% chance
         const random = Math.random();
-        if (random < 0.2) {
-          this.changeAnimation('Idle');
-        } else if (random < 0.8) {
-          this.changeAnimation('Walk');
-        } else {
-          this.changeAnimation('Peck');
+        if (!this.isDead) {
+          if (random < 0.2) {
+            this.changeAnimation('Idle');
+          } else if (random < 0.8) {
+            this.changeAnimation('Walk');
+          } else {
+            this.changeAnimation('Peck');
+          }
+          this.object.rotation.y = (Math.random() * 2 - 1) * Math.PI;
         }
-        this.object.rotation.y = (Math.random() * 2 - 1) * Math.PI;
       }
 
       // update stats every 10s
@@ -315,6 +334,11 @@ class ChickenEntity extends Entity {
     // walk
     if (this.activeAction.getClip().name == 'Walk') {
       this.walkCircle();
+    }
+
+    // death
+    if (this.health <= 0) {
+      this.die();
     }
   }
 }
