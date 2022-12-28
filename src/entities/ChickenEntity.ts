@@ -17,7 +17,7 @@ class ChickenEntity extends Entity {
   private healthDecayTimer: number = 10;
   public gender: string; // m/f - random
   public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
-  private isAdult: boolean = false;
+  public isAdult: boolean = false;
   public food: number; // 0-100 - 100 is full, 0 survives 30s then dies
   public care: number; // 0-100 - aritmetic mean of food, water and care
   public health: number; // 0-100 - on 0 food or 0 water starts to decrease after 30s; on age > 10 starts to decrease,
@@ -267,6 +267,9 @@ class ChickenEntity extends Entity {
       (action) => action.getClip().name === animationName
     );
     if (animationAction) {
+      if (this.isDead) {
+        this.mixer.stopAllAction();
+      }
       this.lastAction = this.activeAction;
       this.activeAction = animationAction;
       animationAction?.setLoop(THREE.LoopOnce, 1);
@@ -274,7 +277,7 @@ class ChickenEntity extends Entity {
       this.lastAction.fadeOut(0.5);
       animationAction.reset().fadeIn(0.5).play();
 
-      if (animationName != 'Death') {
+      if (!this.isDead) {
         this.activeAction = this.lastAction;
         animationAction?.fadeOut(0.5);
         this.lastAction.reset().fadeIn(0.5).play();
@@ -286,13 +289,28 @@ class ChickenEntity extends Entity {
    * Takes care of death of object
    */
   die() {
-    this.playAnimationOnce('Death');
     this.isDead = true;
+    this.playAnimationOnce('Death');
     setTimeout(() => {
       this.object.parent?.remove(this.object);
       entityManager.remove(this);
       stats.poultry--;
     }, 2000);
+  }
+
+  /**
+   * Sells object - removes from scene and entityManager
+   * Mark it as dead
+   * Money is added in GameController
+   */
+  sell() {
+    this.isDead = true;
+    this.playAnimationOnce('Roll');
+    setTimeout(() => {
+      this.object.parent?.remove(this.object);
+      entityManager.remove(this);
+      stats.poultry--;
+    }, 1000);
   }
 
   update(time: number) {
