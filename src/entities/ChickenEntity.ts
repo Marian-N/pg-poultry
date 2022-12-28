@@ -51,7 +51,6 @@ class ChickenEntity extends Entity {
    * If it includes parameters to increase food, increase food by that number
    */
   updateFoodStat(increase?: boolean, increaseNumber?: number) {
-    this.onStatUpdate();
     if (!increase) {
       if (this.food > 0) {
         this.food -= 1;
@@ -64,6 +63,7 @@ class ChickenEntity extends Entity {
         this.food = 100;
       }
     }
+    this.onStatUpdate();
   }
 
   /**
@@ -74,7 +74,6 @@ class ChickenEntity extends Entity {
    * If age is > 10 start decrease health
    */
   updateHealth() {
-    this.onStatUpdate();
     if (this.food == 0) {
       this.healthDecayTimer -= 1;
     } else {
@@ -96,6 +95,7 @@ class ChickenEntity extends Entity {
         this.health -= 1;
       }
     }
+    this.onStatUpdate();
   }
 
   /**
@@ -156,8 +156,8 @@ class ChickenEntity extends Entity {
    * Aritmetic mean of food and care
    */
   updateCareStat() {
-    this.onStatUpdate();
     this.care = (this.food + this.care) / 2;
+    this.onStatUpdate();
   }
 
   /**
@@ -354,8 +354,8 @@ class ChickenEntity extends Entity {
     if (this.elapsedTimeMin != Math.floor(this.elapsedTime / 60)) {
       this.elapsedTimeMin = Math.floor(this.elapsedTime / 60);
       //update age
-      this.onStatUpdate();
       this.age = this.elapsedTimeMin;
+      this.onStatUpdate();
       this.toggleEggLayer();
     }
 
