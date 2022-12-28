@@ -55,6 +55,24 @@ class GameController {
     }
   }
 
+  /**
+   * Sells chicken based on care
+   * Calculates price: 50 + care rounded to 10 / 2
+   * @param entity
+   */
+  private sellChicken(entity: ChickenEntity) {
+    // TODO sell based on: age, health, care (weigth if implemented)
+    // base price - 50 for adult, 20 for child
+    const basePrice = entity.isAdult ? 50 : 10;
+    // care - rounded to 10 and divided by 2
+    const roundedCare = (Math.round(entity.care / 10) * 10) / 2;
+    let price = basePrice + roundedCare;
+    // sell chicken
+    entity.sell();
+    // add money to stats
+    stats.money += price;
+  }
+
   onAction(action: Action, payload: Payload) {
     // TODO action response - failure, success - UI
     console.log(action, payload);
@@ -66,6 +84,9 @@ class GameController {
         entity.updateFoodStat(true, updateFoodValue);
         stats.food -= updateFoodValue;
       }
+    }
+    if (action === 'sellPoultry' && entity instanceof ChickenEntity) {
+      this.sellChicken(entity);
     }
     if (action === 'buyFood' && value) {
       this.buyFood(value);
