@@ -1,10 +1,6 @@
 import ChickenEntity from './entities/ChickenEntity';
 import Entity from './entities/Entity';
-import {
-  Action,
-  priceMultiplier,
-  ShopTransactionAction
-} from './gameController';
+import { priceMultiplier, ShopTransactionAction } from './gameController';
 import { gameController } from './globals';
 import Pointer from './Pointer';
 
@@ -81,18 +77,17 @@ class Hud {
   private init() {
     const hud = document.getElementById('hud') as HTMLElement;
     const poultry = hud?.querySelector('#hud-poultry .value') as HTMLElement;
-    const eggs = hud?.querySelector('#hud-eggs .value') as HTMLElement;
+    const eggs = hud?.querySelector('#hud-eggs') as HTMLElement;
+    eggs.addEventListener('click', () => {
+      gameController.onAction('hatchEgg');
+    });
+    this.$eggs = [eggs?.querySelector('.value') as HTMLElement];
     const food = hud?.querySelector('#hud-food .value') as HTMLElement;
     const money = hud?.querySelector('#open-shop .value') as HTMLElement;
     this.element = hud;
     this.$poultry = [poultry];
-    this.$eggs = [eggs];
     this.$food = [food];
     this.$money = [money];
-
-    eggs.addEventListener('click', () => {
-      gameController.onAction('hatchEgg');
-    });
   }
 
   get poultry() {
