@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Hen from '../../resources/models/poultry/Hen.gltf';
 import Rooster from '../../resources/models/poultry/Rooster.gltf';
 import Egg from '../../resources/models/poultry/Egg.gltf';
-import { entityManager, scene, stats } from '../globals';
+import { entityManager, scene, stats, ui } from '../globals';
 import EggEntity from './EggEntity';
 import Stats from '../Stats';
 
@@ -40,12 +40,17 @@ class ChickenEntity extends Entity {
     }
   }
 
+  private onStatUpdate() {
+    ui.popup.content.innerHTML = ui.getChickenPopupContent(this);
+  }
+
   /**
    * Update food every second by 0.5
    * If food is 0 start decrease health timer
    * If it includes parameters to increase food, increase food by that number
    */
   updateFoodStat(increase?: boolean, increaseNumber?: number) {
+    this.onStatUpdate();
     if (!increase) {
       if (this.food > 0) {
         this.food -= 1;
@@ -68,6 +73,7 @@ class ChickenEntity extends Entity {
    * If age is > 10 start decrease health
    */
   updateHealth() {
+    this.onStatUpdate();
     if (this.food == 0) {
       this.healthDecayTimer -= 1;
     } else {
@@ -149,6 +155,7 @@ class ChickenEntity extends Entity {
    * Aritmetic mean of food and care
    */
   updateCareStat() {
+    this.onStatUpdate();
     this.care = (this.food + this.care) / 2;
   }
 
@@ -346,6 +353,7 @@ class ChickenEntity extends Entity {
     if (this.elapsedTimeMin != Math.floor(this.elapsedTime / 60)) {
       this.elapsedTimeMin = Math.floor(this.elapsedTime / 60);
       //update age
+      this.onStatUpdate();
       this.age = this.elapsedTimeMin;
       this.toggleEggLayer();
     }
