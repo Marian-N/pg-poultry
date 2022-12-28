@@ -7,6 +7,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 export default defineConfig({
   base: '/pg-poultry/',
   build: {
+    assetsInlineLimit: 0,
     chunkSizeWarningLimit: 1000
   },
   resolve: {
