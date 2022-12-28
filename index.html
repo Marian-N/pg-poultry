@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PG Poultry</title>
     
-    <script type="module" crossorigin src="/pg-poultry/assets/index.874fceb7.js"></script>
-    <link rel="stylesheet" href="/pg-poultry/assets/index.01bb2fac.css">
+    <script type="module" crossorigin src="/pg-poultry/assets/index.817c0ecf.js"></script>
+    <link rel="stylesheet" href="/pg-poultry/assets/index.65988e71.css">
   </head>
   <body>
     <!-- UI -->
@@ -21,7 +21,7 @@
               <i class="bi ci-chicken"></i> <b class="value"></b>
             </p>
           </div>
-          <div id="hud-eggs" class="hud__item">
+          <div id="hud-eggs" class="hud__item sketch-button">
             <p class="hud__item__title">Eggs</p>
             <p class="hud__item__value">
               <i class="bi bi-egg-fill"></i> <b class="value"></b>
@@ -49,7 +49,7 @@
     <div id="shop" class="shop">
       <div class="shop__header">
         <div class="shop__header__title"><i class="bi bi-shop"></i> Shop</div>
-        <div><i class="bi bi-currency-dollar"></i><b class="value">0</b></div>
+        <div><i class="bi bi-currency-dollar"></i><b class="value"></b></div>
         <div class="shop__close close-button">
           <i class="bi bi-x"></i>
         </div>
@@ -58,8 +58,86 @@
       <div class="shop__body">
         <div class="shop__pages">
           <div class="shop__page" data-page="poultry">poultry</div>
-          <div class="shop__page" data-page="eggs">eggs</div>
-          <div class="shop__page" data-page="food">food</div>
+          <div class="shop__page" data-page="eggs">
+            <p>chicken</p>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                1 <i class="bi bi-egg-fill"></i>
+              </div>
+              <div class="button-group" data-amount="1">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyEggs"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellEggs"
+                ></button>
+              </div>
+            </div>
+          </div>
+          <div class="shop__page" data-page="food">
+            <div class="shop__item">
+              <div class="shop__item__label">
+                10 <i class="bi ci-grain"></i>
+              </div>
+              <div class="button-group" data-amount="10">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyFood"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellFood"
+                ></button>
+              </div>
+            </div>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                30 <i class="bi ci-grain"></i>
+              </div>
+              <div class="button-group" data-amount="30">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyFood"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellFood"
+                ></button>
+              </div>
+            </div>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                60 <i class="bi ci-grain"></i>
+              </div>
+              <div class="button-group" data-amount="60">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyFood"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellFood"
+                ></button>
+              </div>
+            </div>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                100 <i class="bi ci-grain"></i>
+              </div>
+              <div class="button-group" data-amount="100">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyFood"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellFood"
+                ></button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="shop__tabs">
           <div class="shop__tab sketch-button" data-tab="poultry">
@@ -76,7 +154,11 @@
     </div>
 
     <!-- On click popup -->
-    <div id="popup" class="popup">
+    <div
+      id="popup"
+      class="popup"
+      oncontextmenu="javascript:event.stopPropagation();return false;"
+    >
       <div class="popup__header">
         <div class="popup__header__title"></div>
         <div class="popup__close close-button">
@@ -85,6 +167,10 @@
       </div>
       <div class="popup__body">
         <div class="popup__body__content"></div>
+      </div>
+      <div class="popup__footer">
+        <button class="button sketch-button" data-action="feed">feed</button>
+        <button class="button sketch-button" data-action="sell">sell</button>
       </div>
     </div>
 
