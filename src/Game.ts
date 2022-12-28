@@ -15,7 +15,7 @@ import Ui from './Ui';
 import Farm from '../resources/models/farm/Farm.gltf';
 import { entityManager, scene, stats, ui, gameController } from './globals';
 import Stats from './Stats';
-import GameController from './gameController';
+import GameController from './GameController';
 
 class Game {
   private scene: THREE.Scene;

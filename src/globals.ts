@@ -1,5 +1,5 @@
 import { Scene } from 'three';
-import GameController from './gameController';
+import GameController from './GameController';
 import EntityManager from './entities/EntityManager';
 import Stats from './Stats';
 import Ui from './Ui';
