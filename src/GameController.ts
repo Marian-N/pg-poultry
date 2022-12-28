@@ -5,10 +5,27 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
 
-type Action = 'feedPoultry' | 'sellPoultry' | 'buyFood' | 'sellFood';
-type Payload = {
+export type ShopTransactionAction =
+  | 'buyEggs'
+  | 'sellEggs'
+  | 'buyFood'
+  | 'sellFood'
+  | 'buyPoultry'
+  | 'sellPoultry';
+export type GameAction = 'feedPoultry';
+export type Action = ShopTransactionAction | GameAction;
+export type Payload = {
   entity?: Entity;
   value?: number;
+};
+
+export const priceMultiplier: Record<ShopTransactionAction, number> = {
+  buyEggs: 20,
+  sellEggs: 10,
+  buyFood: 1,
+  sellFood: 0.5,
+  buyPoultry: 100,
+  sellPoultry: 50
 };
 
 class GameController {

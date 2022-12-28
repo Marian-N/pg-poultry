@@ -1,5 +1,10 @@
 import ChickenEntity from './entities/ChickenEntity';
 import Entity from './entities/Entity';
+import {
+  Action,
+  priceMultiplier,
+  ShopTransactionAction
+} from './gameController';
 import { gameController } from './globals';
 import Pointer from './Pointer';
 
@@ -152,39 +157,37 @@ class ShopPageItem {
   public element: HTMLElement;
   public buyButton?: HTMLElement;
   public sellButton?: HTMLElement;
-  public value: number;
+  public amount: number;
 
   constructor(element: HTMLElement) {
     this.init(element);
 
     if (this.buyButton) {
-      this.buyButton.innerHTML = `Buy ${dollarIcon}${this.value}`;
+      const action = this.buyButton.dataset.action as ShopTransactionAction;
+      const price = priceMultiplier[action] * this.amount;
+      this.buyButton.innerHTML = `Buy ${dollarIcon}${price}`;
       this.buyButton.addEventListener('click', () => {
-        gameController.onAction('buyFood', { value: this.value });
+        gameController.onAction(action, { value: this.amount });
       });
     }
     if (this.sellButton) {
-      const value = this.value;
-      this.sellButton.innerHTML = `Sell ${dollarIcon}${value / 2}`;
+      const action = this.sellButton.dataset.action as ShopTransactionAction;
+      const price = priceMultiplier[action] * this.amount;
+      this.sellButton.innerHTML = `Sell ${dollarIcon}${price}`;
       this.sellButton.addEventListener('click', () => {
-        gameController.onAction('sellFood', { value });
+        gameController.onAction(action, { value: this.amount });
       });
     }
   }
 
   private init(element: HTMLElement) {
     this.element = element;
-    this.buyButton = element.querySelector(
-      '.button[data-action="buy"]'
-    ) as HTMLElement;
-    this.sellButton = element.querySelector(
-      '.button[data-action="sell"]'
-    ) as HTMLElement;
-    this.value = parseInt(
-      element
-        .querySelector('.button-group')
-        ?.getAttribute('data-value') as string
-    );
+    this.buyButton = element.querySelector('.buy-button') as HTMLElement;
+    this.sellButton = element.querySelector('.sell-button') as HTMLElement;
+    const amount =
+      element.querySelector('.button-group')?.getAttribute('data-amount') ||
+      '0';
+    this.amount = parseInt(amount);
   }
 }
 
