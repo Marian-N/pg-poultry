@@ -17,10 +17,10 @@ class Popup {
       this.element.classList.remove('active');
     });
     this.sellButton.addEventListener('click', () => {
-      gameController.onAction('sellPoultry', this.entity);
+      gameController.onAction('sellPoultry', { entity: this.entity });
     });
     this.feedButton.addEventListener('click', () => {
-      gameController.onAction('feedPoultry', this.entity);
+      gameController.onAction('feedPoultry', { entity: this.entity });
     });
   }
 
