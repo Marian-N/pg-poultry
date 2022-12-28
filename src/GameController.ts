@@ -39,7 +39,7 @@ class GameController {
   private buyFood(value: number) {
     if (stats.money >= value) {
       stats.food += value;
-      stats.money -= value;
+      stats.money -= value * priceMultiplier.buyFood;
     }
   }
 
@@ -51,7 +51,7 @@ class GameController {
   private sellFood(value: number) {
     if (stats.food >= value) {
       stats.food -= value;
-      stats.money += value / 2;
+      stats.money += value * priceMultiplier.sellFood;
     }
   }
 
@@ -71,6 +71,30 @@ class GameController {
     entity.sell();
     // add money to stats
     stats.money += price;
+  }
+
+  /**
+   * Buys eggs based on priceMultiplier => value * priceMultiplier.buyEggs
+   * @param value
+   */
+  private buyEggs(value: number) {
+    const price = value * priceMultiplier.buyEggs;
+    if (stats.money >= price) {
+      stats.eggs += value;
+      stats.money -= price;
+    }
+  }
+
+  /**
+   * Sells eggs based on priceMultiplier => value * priceMultiplier.sellEggs
+   * @param value
+   */
+  private sellEggs(value: number) {
+    const price = value * priceMultiplier.sellEggs;
+    if (stats.eggs >= value) {
+      stats.eggs -= value;
+      stats.money += price;
+    }
   }
 
   onAction(action: Action, payload: Payload) {
@@ -93,6 +117,12 @@ class GameController {
     }
     if (action === 'sellFood' && value) {
       this.sellFood(value);
+    }
+    if (action === 'buyEggs' && value) {
+      this.buyEggs(value);
+    }
+    if (action === 'sellEggs' && value) {
+      this.sellEggs(value);
     }
   }
 
