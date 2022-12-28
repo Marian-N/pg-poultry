@@ -74,7 +74,6 @@ class GameController {
         popup.element.style.top = event.clientY + 'px';
       };
       scene.add(chick);
-      console.log(chickEntity);
       stats.poultry++;
     });
   }

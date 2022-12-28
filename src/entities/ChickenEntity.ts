@@ -82,8 +82,12 @@ class ChickenEntity extends Entity {
       this.health += 1;
     }
 
+    // if older than 10 years start to decrease health - 50% chance to decrease health
     if (this.age > 10) {
-      this.health -= 1;
+      const decreaseRandom = Math.floor(Math.random() * 10);
+      if (decreaseRandom > 5) {
+        this.health -= 1;
+      }
     }
   }
 
