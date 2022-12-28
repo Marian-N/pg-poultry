@@ -5,6 +5,7 @@ import Hen from '../../resources/models/poultry/Hen.gltf';
 import Rooster from '../../resources/models/poultry/Rooster.gltf';
 import Egg from '../../resources/models/poultry/Egg.gltf';
 import { entityManager, scene, stats } from '../globals';
+import EggEntity from './EggEntity';
 
 const radius = 90;
 const angle = 0;
@@ -12,9 +13,6 @@ const x = radius * Math.cos(angle);
 const z = radius * Math.sin(angle);
 
 class ChickenEntity extends Entity {
-  private elapsedTimeSec: number = 0;
-  private elapsedTime: number = 0;
-  private elapsedTimeMin: number = 0;
   private healthDecayTimer: number = 0;
   public gender: string; // m/f - random
   public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
@@ -210,15 +208,14 @@ class ChickenEntity extends Entity {
       const egg = gltf.scene;
       egg.position.copy(this.object.position);
       egg.position.y += 1;
+      // egg.position.z -= 8;
+      // egg.position.x -= 3;
       egg.scale.set(5, 5, 5);
       scene.add(egg);
-      const eggEntity = new Entity(egg);
+      const eggEntity = new EggEntity(egg);
       entityManager.add(eggEntity);
-      eggEntity.onClick = () => {
-        stats.eggs += 1;
-        eggEntity.destroy();
-      };
-      //TODO animation chicken laying egg (Bounce or Clicked)
+      //TODO play animation once and then continue previous animation
+      this.changeAnimation('Jump');
     });
   }
 
@@ -258,10 +255,10 @@ class ChickenEntity extends Entity {
           this.changeAnimation('Idle');
         } else if (random < 0.8) {
           this.changeAnimation('Walk');
-          this.object.rotation.y = (Math.random() * 2 - 1) * Math.PI;
         } else {
           this.changeAnimation('Peck');
         }
+        this.object.rotation.y = (Math.random() * 2 - 1) * Math.PI;
       }
 
       // update stats every 10s

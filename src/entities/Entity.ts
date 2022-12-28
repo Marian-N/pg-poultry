@@ -6,6 +6,9 @@ class Entity {
   public animationActions: THREE.AnimationAction[] = [];
   public activeAction: THREE.AnimationAction;
   public lastAction: THREE.AnimationAction;
+  public elapsedTimeSec: number = 0;
+  public elapsedTime: number = 0;
+  public elapsedTimeMin: number = 0;
   object: THREE.Object3D;
   public mixer: THREE.AnimationMixer;
 

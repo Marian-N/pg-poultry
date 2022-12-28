@@ -98,7 +98,24 @@ class Game {
         const popup = this.ui.popup;
         popup.element.classList.add('active');
         popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
-        popup.content.innerHTML = 'cluck '.repeat(8);
+        popup.content.innerHTML = `
+        <table height="100%" width="100%"
+        style="border-spacing: 10px 0;">
+          <tr>
+            <td>Health</td>
+            <td>${chickEntity.health}%</td>
+          </tr>
+          <tr>
+            <td>Food</td>
+            <td>${chickEntity.food}%</td>
+          </tr>
+          <tr>
+            <td>Care</td>
+            <td>${Math.round(chickEntity.care * 100) / 100}%</td>
+          </tr>
+        </table>
+      `;
+        // popup.content.innerHTML = 'cluck '.repeat(8);
         popup.element.style.left = event.clientX + 'px';
         popup.element.style.top = event.clientY + 'px';
       };
