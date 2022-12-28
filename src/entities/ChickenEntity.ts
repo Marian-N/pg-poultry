@@ -41,7 +41,8 @@ class ChickenEntity extends Entity {
   }
 
   private onStatUpdate() {
-    ui.popup.content.innerHTML = ui.getChickenPopupContent(this);
+    if (ui.popup.entity == this)
+      ui.popup.content.innerHTML = ui.getChickenPopupContent(this);
   }
 
   /**
