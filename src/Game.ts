@@ -78,7 +78,7 @@ class Game {
       chick.rotateY(0.5);
 
       const chickEntity = this.entityManager.add(
-        new ChickenEntity(chick, gender)
+        new ChickenEntity(chick, gender, 3)
       ) as ChickenEntity;
       // get all available animations
       const animations = gltf.animations;

@@ -3,6 +3,7 @@ import Entity from './Entity';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Hen from '../../resources/models/poultry/Hen.gltf';
 import Rooster from '../../resources/models/poultry/Rooster.gltf';
+import Egg from '../../resources/models/poultry/Egg.gltf';
 
 const radius = 90;
 const angle = 0;
@@ -30,6 +31,12 @@ class ChickenEntity extends Entity {
     this.health = 100;
     this.eggLayer = false;
     this.gender = gender ? gender : Math.random() > 0.5 ? 'm' : 'f';
+    if (age) {
+      this.elapsedTimeMin = age;
+      this.elapsedTimeSec = age * 60;
+      this.elapsedTime = age * 60;
+      this.toggleEggLayer();
+    }
   }
 
   /**
@@ -193,6 +200,37 @@ class ChickenEntity extends Entity {
     this.object.translateOnAxis(direction, speed);
   }
 
+  /**
+   * Create egg object
+   */
+  layEgg() {
+    const loader = new GLTFLoader();
+    loader.load(Egg, (gltf) => {
+      const egg = gltf.scene;
+      egg.position.copy(this.object.position);
+      egg.position.y += 1;
+      egg.scale.set(5, 5, 5);
+      this.object.parent?.add(egg);
+      //TODO animation chicken laying egg (Bounce or Clicked)
+    });
+  }
+
+  /**
+   * Toggle eggLayer based on age, gender and care
+   */
+  toggleEggLayer() {
+    //update eggLayer - f and adult and care > 70
+    if (this.age > 2 && this.age < 10) {
+      if (this.gender == 'f' && this.care > 50) {
+        this.eggLayer = true;
+      } else {
+        this.eggLayer = false;
+      }
+    } else {
+      this.eggLayer = false;
+    }
+  }
+
   update(time: number) {
     super.update(time);
     this.elapsedTime += time;
@@ -227,7 +265,11 @@ class ChickenEntity extends Entity {
 
       // lay egg every 30s
       if (this.elapsedTimeSec % 30 == 0 && this.elapsedTimeSec != 0) {
-        // TODO lay egg
+        console.log(this);
+        if (this.eggLayer) {
+          this.toggleEggLayer();
+          if (this.eggLayer) this.layEgg();
+        }
       }
 
       // update to adult
@@ -243,16 +285,7 @@ class ChickenEntity extends Entity {
       this.elapsedTimeMin = Math.floor(this.elapsedTime / 60);
       //update age
       this.age = this.elapsedTimeMin;
-
-      //update eggLayer - f and adult and care > 70
-      if (this.age > 2 && this.age < 10) {
-        if (this.gender == 'f' && this.care > 70) this.eggLayer = true;
-        else {
-          this.eggLayer = false;
-        }
-      } else {
-        this.eggLayer = false;
-      }
+      this.toggleEggLayer();
     }
 
     // walk
