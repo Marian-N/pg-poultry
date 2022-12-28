@@ -1,3 +1,4 @@
+import ChickenEntity from './entities/ChickenEntity';
 import Entity from './entities/Entity';
 import { gameController } from './globals';
 import Pointer from './Pointer';
@@ -310,6 +311,30 @@ class Ui {
   private initHud() {
     this.hud = new Hud();
     this.hud.$money.push(this.shop.money);
+  }
+
+  public getChickenPopupContent(chicken: ChickenEntity) {
+    return `
+    <table height="100%" width="100%"
+    style="border-spacing: 10px 0;">
+      <tr>
+        <td>Health</td>
+        <td>${chicken.health}%</td>
+      </tr>
+      <tr>
+        <td>Food</td>
+        <td>${chicken.food}%</td>
+      </tr>
+      <tr>
+        <td>Care</td>
+        <td>${Math.round(chicken.care * 100) / 100}%</td>
+      </tr>
+      <tr>
+        <td>Age</td>
+        <td>${chicken.age}</td>
+      </tr>
+    </table>
+  `;
   }
 }
 
