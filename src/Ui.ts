@@ -163,8 +163,8 @@ class ShopPageItem {
       });
     }
     if (this.sellButton) {
-      const value = this.value / 2;
-      this.sellButton.innerHTML = `Sell ${dollarIcon}${value}`;
+      const value = this.value;
+      this.sellButton.innerHTML = `Sell ${dollarIcon}${value / 2}`;
       this.sellButton.addEventListener('click', () => {
         gameController.onAction('sellFood', { value });
       });

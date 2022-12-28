@@ -116,7 +116,7 @@ class Game {
         }
       });
       farm.scale.set(1.5, 1.5, 1.5);
-      farm.position.set(-30, 0, 0);
+      farm.position.set(-30, 0, -10);
 
       this.scene.add(farm);
     });
