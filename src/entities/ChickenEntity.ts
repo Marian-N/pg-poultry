@@ -48,7 +48,7 @@ class ChickenEntity extends Entity {
   updateFoodStat(increase?: boolean, increaseNumber?: number) {
     if (!increase) {
       if (this.food > 0) {
-        this.food -= 0.5;
+        this.food -= 1;
       }
     }
     if (increase && increaseNumber) {
@@ -294,10 +294,14 @@ class ChickenEntity extends Entity {
     // update stats every 1s
     if (this.elapsedTimeSec != Math.floor(this.elapsedTime)) {
       this.elapsedTimeSec = Math.floor(this.elapsedTime);
-      // update food
-      this.updateFoodStat();
       // update health
       this.updateHealth();
+
+      // update every 2s
+      if (this.elapsedTimeSec % 2 == 0 && this.elapsedTimeSec != 0) {
+        // update food
+        this.updateFoodStat();
+      }
 
       // update stats every 5s
       if (this.elapsedTimeSec % 5 == 0 && this.elapsedTimeSec != 0) {

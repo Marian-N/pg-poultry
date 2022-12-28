@@ -6,15 +6,22 @@ import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
 
 type Action = 'feedPoultry' | 'sellPoultry';
+type Payload = {
+  entity?: Entity;
+  value?: number;
+};
 
 class GameController {
   constructor() {}
 
-  onAction(action: Action, entity: Entity) {
+  onAction(action: Action, payload: Payload) {
     console.log(action);
+    const { entity, value } = payload;
     if (action === 'feedPoultry') {
       if (entity instanceof ChickenEntity) {
-        console.log('chicken');
+        const updateFoodValue = Math.min(10, 100 - entity.food, stats.food);
+        entity.updateFoodStat(true, updateFoodValue);
+        stats.food -= updateFoodValue;
       }
     }
   }
