@@ -13,24 +13,30 @@
     <div id="hud" class="hud">
       <div class="hud__content">
         <div class="hud__content__left">
-          <div class="hud__item">
+          <div id="hud-poultry" class="hud__item">
             <p class="hud__item__title">Poultry</p>
-            <p class="hud__item__value"><i class="bi ci-chicken"></i> 0</p>
+            <p class="hud__item__value">
+              <i class="bi ci-chicken"></i> <b class="value"></b>
+            </p>
           </div>
-          <div class="hud__item">
+          <div id="hud-eggs" class="hud__item">
             <p class="hud__item__title">Eggs</p>
-            <p class="hud__item__value"><i class="bi bi-egg-fill"></i> 0</p>
+            <p class="hud__item__value">
+              <i class="bi bi-egg-fill"></i> <b class="value"></b>
+            </p>
           </div>
-          <div class="hud__item">
+          <div id="hud-food" class="hud__item">
             <p class="hud__item__title">Food</p>
-            <p class="hud__item__value"><i class="bi ci-grain"></i> 0</p>
+            <p class="hud__item__value">
+              <i class="bi ci-grain"></i> <b class="value"></b>
+            </p>
           </div>
         </div>
         <div class="hud__content__right">
           <div id="open-shop" class="hud__item sketch-button">
             <p class="hud__item__title">Shop <i class="bi bi-cart4"></i></p>
             <p class="hud__item__value">
-              <i class="bi bi-currency-dollar"></i><b>0</b>
+              <i class="bi bi-currency-dollar"></i><b class="value"></b>
             </p>
           </div>
         </div>
@@ -41,7 +47,7 @@
     <div id="shop" class="shop">
       <div class="shop__header">
         <div class="shop__header__title"><i class="bi bi-shop"></i> Shop</div>
-        <div><i class="bi bi-currency-dollar"></i><b>0</b></div>
+        <div><i class="bi bi-currency-dollar"></i><b class="value">0</b></div>
         <div class="shop__close close-button">
           <i class="bi bi-x"></i>
         </div>

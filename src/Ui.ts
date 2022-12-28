@@ -31,12 +31,108 @@ class Popup {
   }
 }
 
+interface IHudUpdateValues {
+  poultry?: number;
+  eggs?: number;
+  food?: number;
+  money?: number;
+}
+
+class Hud {
+  public element: HTMLElement;
+  public $poultry: HTMLElement[];
+  public $eggs: HTMLElement[];
+  public $food: HTMLElement[];
+  public $money: HTMLElement[];
+  private _poultry: number;
+  private _eggs: number;
+  private _food: number;
+  private _money: number;
+
+  constructor() {
+    this.init();
+  }
+
+  private init() {
+    const hud = document.getElementById('hud') as HTMLElement;
+    const poultry = hud?.querySelector('#hud-poultry .value') as HTMLElement;
+    const eggs = hud?.querySelector('#hud-eggs .value') as HTMLElement;
+    const food = hud?.querySelector('#hud-food .value') as HTMLElement;
+    const money = hud?.querySelector('#open-shop .value') as HTMLElement;
+    this.element = hud;
+    this.$poultry = [poultry];
+    this.$eggs = [eggs];
+    this.$food = [food];
+    this.$money = [money];
+  }
+
+  get poultry() {
+    return this._poultry;
+  }
+
+  set poultry(value: number) {
+    this._poultry = value;
+    this.$poultry.forEach((el) => {
+      el.innerText = value.toString();
+    });
+  }
+
+  get eggs() {
+    return this._eggs;
+  }
+
+  set eggs(value: number) {
+    this._eggs = value;
+    this.$eggs.forEach((el) => {
+      el.innerText = value.toString();
+    });
+  }
+
+  get food() {
+    return this._food;
+  }
+
+  set food(value: number) {
+    this._food = value;
+    this.$food.forEach((el) => {
+      el.innerText = value.toString();
+    });
+  }
+
+  get money() {
+    return this._money;
+  }
+
+  set money(value: number) {
+    this._money = value;
+    this.$money.forEach((el) => {
+      el.innerText = value.toString();
+    });
+  }
+
+  update(values: IHudUpdateValues) {
+    if (values.poultry !== undefined) {
+      this.poultry = values.poultry;
+    }
+    if (values.eggs !== undefined) {
+      this.eggs = values.eggs;
+    }
+    if (values.food !== undefined) {
+      this.food = values.food;
+    }
+    if (values.money !== undefined) {
+      this.money = values.money;
+    }
+  }
+}
+
 type ShopTab = 'poultry' | 'eggs' | 'food';
 
 class Shop {
   public element: HTMLElement;
   public openButton: HTMLElement;
   public closeButton: HTMLElement;
+  public money: HTMLElement;
   private tabs: Record<ShopTab, HTMLElement>;
   private _activeTab: ShopTab;
   private pages: Record<ShopTab, HTMLElement>;
@@ -100,6 +196,7 @@ class Shop {
     this.closeButton = closeButton;
     this.openButton = openButton;
     this.isOpen = false;
+    this.money = shop?.querySelector('.shop__header .value') as HTMLElement;
   }
 }
 
@@ -107,6 +204,7 @@ class Ui {
   private pointer: Pointer;
   public popup: Popup;
   public shop: Shop;
+  public hud: Hud;
 
   constructor(pointer: Pointer) {
     this.pointer = pointer;
@@ -116,6 +214,7 @@ class Ui {
   private init() {
     this.initPopup();
     this.initShop();
+    this.initHud();
   }
 
   private initPopup() {
@@ -128,6 +227,11 @@ class Ui {
 
   private initShop() {
     this.shop = new Shop();
+  }
+
+  private initHud() {
+    this.hud = new Hud();
+    this.hud.$money.push(this.shop.money);
   }
 }
 
