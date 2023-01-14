@@ -1,12 +1,15 @@
 import * as THREE from 'three';
 import Entity from './Entity';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import Hen from '../../resources/models/poultry/Hen.gltf';
-import Rooster from '../../resources/models/poultry/Rooster.gltf';
+import Hen from '../../resources/models/poultry/Hen.fbx';
+import Rooster from '../../resources/models/poultry/Rooster.fbx';
+import HenTexture from '../../resources/models/poultry/Tex_Hen.png';
+import RoosterTexture from '../../resources/models/poultry/Tex_Rooster.png';
 import Egg from '../../resources/models/poultry/Egg.gltf';
 import { entityManager, scene, stats, ui } from '../globals';
 import EggEntity from './EggEntity';
 import Stats from '../Stats';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
 const radius = 90;
 const angle = 0;
@@ -22,6 +25,7 @@ class ChickenEntity extends Entity {
   public care: number; // 0-100 - aritmetic mean of food, water and care
   public health: number; // 0-100 - on 0 food or 0 water starts to decrease after 30s; on age > 10 starts to decrease,
   public eggLayer: boolean; // true/false - f and adult and care > 70
+  // public weight: number; // min 1kg, max 5kg only in adult
   private isDead: boolean = false;
 
   constructor(object: THREE.Object3D, gender?: string, age?: number) {
@@ -102,17 +106,28 @@ class ChickenEntity extends Entity {
    * Change model to adult
    * Change mixer to adult animation
    */
-  changeModel(model: any) {
-    const loader = new GLTFLoader();
-    loader.load(model, (gltf) => {
+  changeModel(model: any, animalTexture: any) {
+    const loader = new FBXLoader(); //new GLTFLoader();
+    var texture = new THREE.TextureLoader().load(animalTexture);
+    texture.encoding = THREE.sRGBEncoding;
+    loader.load(model, (object) => {
       // get scene from parent
       const scene = this.object.parent;
       // create new object
-      const newObject = gltf.scene;
+      const newObject = object;
       // copy position, scale and rotation
       newObject.position.copy(this.object.position);
       newObject.scale.copy(this.object.scale);
       newObject.rotation.copy(this.object.rotation);
+      newObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            emissive: new THREE.Color(0.1, 0.1, 0.1),
+            map: texture
+          });
+        }
+      });
+
       // remove old object and replace with new one
       scene?.remove(this.object);
       this.object = newObject;
@@ -131,14 +146,14 @@ class ChickenEntity extends Entity {
       // animation
       this.mixer = new THREE.AnimationMixer(newObject);
       // get all available animations
-      const animations = gltf.animations;
+      const animations = object.animations;
       this.animationActions = [];
       // Iterate over the animations and push them into the animationActions array
       for (let i = 0; i < animations.length; i++) {
         const animation = animations[i];
         this.animationActions.push(this.mixer.clipAction(animation));
       }
-      const animationClip = gltf.animations.find(
+      const animationClip = object.animations.find(
         (animation) => animation.name === this.activeAction.getClip().name
       );
       if (animationClip) {
@@ -363,8 +378,8 @@ class ChickenEntity extends Entity {
       // update to adult
       if (this.age > 2 && !this.isAdult && !this.isDead) {
         this.isAdult = true;
-        if (this.gender == 'f') this.changeModel(Hen);
-        else this.changeModel(Rooster);
+        if (this.gender == 'f') this.changeModel(Hen, HenTexture);
+        else this.changeModel(Rooster, RoosterTexture);
       }
     }
 

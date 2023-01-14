@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import ChickenEntity from './entities/ChickenEntity';
-import Chick from '../resources/models/poultry/Chick.gltf';
+import Chick from '../resources/models/poultry/Chick.fbx';
+import ChickTexture from '../resources/models/poultry/Tex_Chick.png';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
 
@@ -141,20 +143,31 @@ class GameController {
   }
 
   createChicken(pos?: THREE.Vector3, gender?: string, age?: number) {
-    const loader = new GLTFLoader();
+    const loader = new FBXLoader();
     const position = pos ? pos : new THREE.Vector3(0, 0, 0);
-    loader.load(Chick, (gltf) => {
-      const chick = gltf.scene;
+    var texture = new THREE.TextureLoader().load(ChickTexture);
+    texture.encoding = THREE.sRGBEncoding;
+    loader.load(Chick, (object) => {
+      const chick = object;
 
       chick.position.set(position.x, position.y, position.z);
       chick.scale.set(0.05, 0.05, 0.05);
       chick.rotateY(0.5);
 
+      chick.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            emissive: new THREE.Color(0.1, 0.1, 0.1),
+            map: texture
+          });
+        }
+      });
+
       const chickEntity = entityManager.add(
         new ChickenEntity(chick, gender, age)
       ) as ChickenEntity;
       // get all available animations
-      const animations = gltf.animations;
+      const animations = object.animations;
       // Iterate over the animations and push them into the animationActions array
       for (let i = 0; i < animations.length; i++) {
         const animation = animations[i];
