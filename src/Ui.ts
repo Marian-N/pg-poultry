@@ -1,4 +1,4 @@
-import ChickenEntity from './entities/ChickenEntity';
+import PoultryEntity from './entities/PoultryEntity';
 import Entity from './entities/Entity';
 import { priceMultiplier, ShopTransactionAction } from './GameController';
 import { gameController } from './globals';
@@ -320,7 +320,7 @@ class Ui {
     this.hud.$money.push(this.shop.money);
   }
 
-  public getChickenPopupContent(chicken: ChickenEntity) {
+  public getChickenPopupContent(chicken: PoultryEntity) {
     return `
     <table height="100%" width="100%"
     style="border-spacing: 10px 0;">

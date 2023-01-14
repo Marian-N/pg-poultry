@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import ChickenEntity from './entities/ChickenEntity';
+import PoultryEntity from './entities/PoultryEntity';
 import Chick from '../resources/models/poultry/Chick.fbx';
 import ChickTexture from '../resources/models/poultry/Tex_Chick.png';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
-
-export type PoultryRepresentative = 'chicken' | 'goose' | 'turkey';
+import { PoultryRepresentative } from './entities/PoultryEntity';
 
 export type ShopTransactionAction =
   | 'buyEggs'
@@ -64,7 +63,7 @@ class GameController {
    * Calculates price: 50 + care rounded to 10 / 2
    * @param entity
    */
-  private sellChicken(entity: ChickenEntity) {
+  private sellChicken(entity: PoultryEntity) {
     // TODO sell based on: age, health, care (weigth if implemented)
     // base price - 50 for adult, 20 for child
     const basePrice = entity.isAdult ? 50 : 10;
@@ -107,7 +106,7 @@ class GameController {
    */
   private hatchEgg() {
     if (stats.eggs > 0) {
-      this.createChicken();
+      this.createPoultry('chicken');
       stats.eggs -= 1;
     }
   }
@@ -118,13 +117,13 @@ class GameController {
     const { entity, value } = payload;
     // Feeds poultry with constraints: 1. Can't feed more than 10 food 2. Can't feed more than food capacity (100) 3. Can't feed more than the amount of food you have
     if (action === 'feedPoultry') {
-      if (entity instanceof ChickenEntity) {
+      if (entity instanceof PoultryEntity) {
         const updateFoodValue = Math.min(10, 100 - entity.food, stats.food);
         entity.updateFoodStat(true, updateFoodValue);
         stats.food -= updateFoodValue;
       }
     }
-    if (action === 'sellPoultry' && entity instanceof ChickenEntity) {
+    if (action === 'sellPoultry' && entity instanceof PoultryEntity) {
       this.sellChicken(entity);
     }
     if (action === 'buyFood' && value) {
@@ -144,7 +143,12 @@ class GameController {
     }
   }
 
-  createChicken(pos?: THREE.Vector3, gender?: string, age?: number) {
+  createPoultry(
+    type: PoultryRepresentative,
+    pos?: THREE.Vector3,
+    gender?: string,
+    age?: number
+  ) {
     const loader = new FBXLoader();
     const position = pos ? pos : new THREE.Vector3(0, 0, 0);
     var texture = new THREE.TextureLoader().load(ChickTexture);
@@ -166,8 +170,8 @@ class GameController {
       });
 
       const chickEntity = entityManager.add(
-        new ChickenEntity(chick, gender, age)
-      ) as ChickenEntity;
+        new PoultryEntity(chick, type, gender, age)
+      ) as PoultryEntity;
       // get all available animations
       const animations = object.animations;
       // Iterate over the animations and push them into the animationActions array

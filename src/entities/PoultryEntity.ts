@@ -5,18 +5,24 @@ import Hen from '../../resources/models/poultry/Hen.fbx';
 import Rooster from '../../resources/models/poultry/Rooster.fbx';
 import HenTexture from '../../resources/models/poultry/Tex_Hen.png';
 import RoosterTexture from '../../resources/models/poultry/Tex_Rooster.png';
+import Goose from '../../resources/models/poultry/Goose.fbx';
+import GooseTexture from '../../resources/models/poultry/Tex_Goose.png';
+import Turkey from '../../resources/models/poultry/Turkey.fbx';
+import TurkeyTexture from '../../resources/models/poultry/Tex_Turkey.png';
 import Egg from '../../resources/models/poultry/Egg.gltf';
 import { entityManager, scene, stats, ui } from '../globals';
 import EggEntity from './EggEntity';
 import Stats from '../Stats';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
+export type PoultryRepresentative = 'chicken' | 'goose' | 'turkey';
+
 const radius = 90;
 const angle = 0;
 const x = radius * Math.cos(angle);
 const z = radius * Math.sin(angle);
 
-class ChickenEntity extends Entity {
+class PoultryEntity extends Entity {
   private healthDecayTimer: number = 10;
   public gender: string; // m/f - random
   public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
@@ -27,8 +33,14 @@ class ChickenEntity extends Entity {
   public eggLayer: boolean; // true/false - f and adult and care > 70
   // public weight: number; // min 1kg, max 5kg only in adult
   private isDead: boolean = false;
+  public type: PoultryRepresentative;
 
-  constructor(object: THREE.Object3D, gender?: string, age?: number) {
+  constructor(
+    object: THREE.Object3D,
+    type: PoultryRepresentative,
+    gender?: string,
+    age?: number
+  ) {
     super(object);
     this.age = age ? age : 0;
     this.food = 80;
@@ -42,6 +54,7 @@ class ChickenEntity extends Entity {
       this.elapsedTime = age * 60;
       this.toggleEggLayer();
     }
+    this.type = type;
   }
 
   private onStatUpdate() {
@@ -103,14 +116,56 @@ class ChickenEntity extends Entity {
   }
 
   /**
+   * get model attributes based on gender and type
+   * @returns {Object} {model: model, texture: texture, scale: scale}
+   */
+  getModelAttributes() {
+    switch (this.type) {
+      case 'chicken':
+        if (this.gender == 'm') {
+          return {
+            model: Rooster,
+            texture: RoosterTexture,
+            scale: new THREE.Vector3(0.06, 0.06, 0.06)
+          };
+        } else {
+          return {
+            model: Hen,
+            texture: HenTexture,
+            scale: new THREE.Vector3(0.06, 0.06, 0.06)
+          };
+        }
+      case 'goose':
+        return {
+          model: Goose,
+          texture: GooseTexture,
+          scale:
+            this.gender == 'm'
+              ? new THREE.Vector3(0.06, 0.06, 0.06)
+              : new THREE.Vector3(0.05, 0.05, 0.05)
+        };
+      case 'turkey':
+        return {
+          model: Turkey,
+          texture: TurkeyTexture,
+          scale:
+            this.gender == 'm'
+              ? new THREE.Vector3(0.06, 0.06, 0.06)
+              : new THREE.Vector3(0.05, 0.05, 0.05)
+        };
+    }
+  }
+
+  /**
    * Change model to adult
    * Change mixer to adult animation
    */
-  changeModel(model: any, animalTexture: any) {
+  changeModel() {
+    let attributes = this.getModelAttributes(); // get gender specific attributes - model, texture, scale
     const loader = new FBXLoader(); //new GLTFLoader();
-    var texture = new THREE.TextureLoader().load(animalTexture);
+    var texture = new THREE.TextureLoader().load(attributes.texture);
     texture.encoding = THREE.sRGBEncoding;
-    loader.load(model, (object) => {
+    loader.load(attributes.model, (object) => {
       // get scene from parent
       const scene = this.object.parent;
       // create new object
@@ -141,7 +196,11 @@ class ChickenEntity extends Entity {
       });
 
       // scale
-      this.object.scale.set(0.06, 0.06, 0.06);
+      this.object.scale.set(
+        attributes.scale.x,
+        attributes.scale.y,
+        attributes.scale.z
+      );
 
       // animation
       this.mixer = new THREE.AnimationMixer(newObject);
@@ -150,6 +209,23 @@ class ChickenEntity extends Entity {
       this.animationActions = [];
       // Iterate over the animations and push them into the animationActions array
       for (let i = 0; i < animations.length; i++) {
+        //remove 'Rig|' from animation name of goose
+        if (this.type == 'goose') {
+          animations[i].name = animations[i].name.replace('Rig|', '');
+          let deathAnimation, jumpAnimation;
+          // goose doesnt have death and jump animation -> subbstite them
+          if (animations[i].name == 'Roll') {
+            deathAnimation = animations[i].clone();
+            deathAnimation.name = 'Death';
+            this.animationActions.push(this.mixer.clipAction(deathAnimation));
+          }
+          if (animations[i].name == 'Bounce') {
+            jumpAnimation = animations[i].clone();
+            jumpAnimation.name = 'Jump';
+            this.animationActions.push(this.mixer.clipAction(jumpAnimation));
+          }
+        }
+        // add animation to animationActions array
         const animation = animations[i];
         this.animationActions.push(this.mixer.clipAction(animation));
       }
@@ -251,7 +327,7 @@ class ChickenEntity extends Entity {
       // egg.position.x -= 3;
       egg.scale.set(5, 5, 5);
       scene.add(egg);
-      const eggEntity = new EggEntity(egg);
+      const eggEntity = new EggEntity(egg, this.type);
       entityManager.add(eggEntity);
       // this.changeAnimation('Jump');
       this.playAnimationOnce('Jump');
@@ -378,8 +454,8 @@ class ChickenEntity extends Entity {
       // update to adult
       if (this.age > 2 && !this.isAdult && !this.isDead) {
         this.isAdult = true;
-        if (this.gender == 'f') this.changeModel(Hen, HenTexture);
-        else this.changeModel(Rooster, RoosterTexture);
+        // change model
+        this.changeModel();
       }
     }
 
@@ -404,4 +480,4 @@ class ChickenEntity extends Entity {
   }
 }
 
-export default ChickenEntity;
+export default PoultryEntity;

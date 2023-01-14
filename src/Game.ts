@@ -9,7 +9,7 @@ import Turkey from '../resources/models/poultry/Turkey.gltf';
 import Rooster from '../resources/models/poultry/Rooster.gltf';
 import Sky from '../resources/background/sky_1.jpg';
 import Entity from './entities/Entity';
-import ChickenEntity from './entities/ChickenEntity';
+import PoultryEntity from './entities/PoultryEntity';
 import Pointer from './Pointer';
 import Ui from './Ui';
 import Farm from '../resources/models/farm/Farm.gltf';
@@ -66,8 +66,18 @@ class Game {
     // this.addGround();  // ! delete this line
     this.addFarm();
 
-    this.gameController.createChicken(new THREE.Vector3(0, 0, 0), 'm', 3);
-    this.gameController.createChicken(new THREE.Vector3(0, 0, 10), 'f', 3);
+    this.gameController.createPoultry(
+      'chicken',
+      new THREE.Vector3(0, 0, 0),
+      'm',
+      3
+    );
+    this.gameController.createPoultry(
+      'chicken',
+      new THREE.Vector3(0, 0, 10),
+      'f',
+      3
+    );
 
     this.animate();
   }

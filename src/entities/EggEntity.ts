@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import Entity from './Entity';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { entityManager, scene, stats, gameController } from '../globals';
+import { PoultryRepresentative } from './PoultryEntity';
 
 class EggEntity extends Entity {
   private timespan: number = 30; // is destroyed after 30 seconds
+  public type: PoultryRepresentative;
 
-  constructor(object: THREE.Object3D) {
+  constructor(object: THREE.Object3D, type: PoultryRepresentative) {
     super(object);
+    this.type = type;
 
     this.onClick = () => {
       stats.eggs += 1;
