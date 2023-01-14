@@ -7,6 +7,8 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { entityManager, scene, ui, stats } from './globals';
 import Entity from './entities/Entity';
 
+export type PoultryRepresentative = 'chicken' | 'goose' | 'turkey';
+
 export type ShopTransactionAction =
   | 'buyEggs'
   | 'sellEggs'
