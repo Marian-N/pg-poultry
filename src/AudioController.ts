@@ -58,6 +58,7 @@ class AudioController {
 
   init() {
     this.allowed = true;
+    this.audioMap.theme_music.loop = true;
     this.audioMap.theme_music.play();
   }
 }
