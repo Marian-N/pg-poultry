@@ -43,6 +43,10 @@
     color: rgba(white, 0.9);
     background-color: $sketch-color;
 
+    &[data-tab='poultry'] {
+      display: none;
+    }
+
     & > [class^='ci-'],
     [class*=' ci-'] {
       float: right;

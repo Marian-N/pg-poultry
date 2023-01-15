@@ -325,7 +325,7 @@ class Shop {
         shop?.querySelector('.shop__page[data-page="food"]') as HTMLElement
       )
     };
-    this.activeTab = 'poultry';
+    this.activeTab = 'eggs';
     this.element = shop;
     this.closeButton = closeButton;
     this.openButton = openButton;
@@ -334,11 +334,40 @@ class Shop {
   }
 }
 
+class Help {
+  public element: HTMLElement;
+  public closeButton: HTMLElement;
+  public openButton: HTMLElement;
+  public isOpen: boolean;
+
+  constructor() {
+    this.init();
+    this.closeButton.addEventListener('click', () => {
+      this.isOpen = false;
+      this.element.classList.remove('active');
+    });
+    this.openButton.addEventListener('click', () => {
+      this.isOpen = !this.isOpen;
+      this.element.classList.toggle('active');
+    });
+  }
+
+  private init() {
+    this.element = document.getElementById('help') as HTMLElement;
+    this.closeButton = this.element?.getElementsByClassName(
+      'help__close'
+    )[0] as HTMLElement;
+    this.openButton = document.getElementById('hud-help') as HTMLElement;
+    this.isOpen = false;
+  }
+}
+
 class Ui {
   private pointer: Pointer;
   public popup: Popup;
   public shop: Shop;
   public hud: Hud;
+  public help: Help;
 
   constructor() {}
 
@@ -347,6 +376,7 @@ class Ui {
     this.initPopup();
     this.initShop();
     this.initHud();
+    this.help = new Help();
 
     return this;
   }
