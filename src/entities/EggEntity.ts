@@ -13,7 +13,7 @@ class EggEntity extends Entity {
     this.type = type;
 
     this.onClick = () => {
-      stats.eggs += 1;
+      stats.eggs = { ...stats.eggs, [this.type]: stats.eggs[this.type] - 1 };
       this.destroy();
     };
   }

@@ -1,8 +1,9 @@
-import PoultryEntity from './entities/PoultryEntity';
+import PoultryEntity, { PoultryRepresentative } from './entities/PoultryEntity';
 import Entity from './entities/Entity';
 import { priceMultiplier, ShopTransactionAction } from './GameController';
 import { gameController } from './globals';
 import Pointer from './Pointer';
+import { Eggs } from './Stats';
 
 const dollarIcon = '<i class="bi bi-currency-dollar"></i>';
 
@@ -59,7 +60,7 @@ class Popup {
 
 export interface IHudUpdateValues {
   poultry?: number;
-  eggs?: number;
+  eggs?: Eggs;
   food?: number;
   money?: number;
 }
@@ -67,11 +68,11 @@ export interface IHudUpdateValues {
 class Hud {
   public element: HTMLElement;
   public $poultry: HTMLElement[];
-  public $eggs: HTMLElement[];
+  public $eggs: Record<PoultryRepresentative, HTMLElement[]>;
   public $food: HTMLElement[];
   public $money: HTMLElement[];
   private _poultry: number;
-  private _eggs: number;
+  private _eggs: Eggs;
   private _food: number;
   private _money: number;
 
@@ -83,10 +84,19 @@ class Hud {
     const hud = document.getElementById('hud') as HTMLElement;
     const poultry = hud?.querySelector('#hud-poultry .value') as HTMLElement;
     const eggs = hud?.querySelector('#hud-eggs') as HTMLElement;
-    eggs.addEventListener('click', () => {
-      gameController.onAction('hatchEgg');
+    this.$eggs = {
+      chicken: [eggs?.querySelector('#hud-eggs-chicken .value') as HTMLElement],
+      turkey: [eggs?.querySelector('#hud-eggs-turkey .value') as HTMLElement],
+      goose: [eggs?.querySelector('#hud-eggs-goose .value') as HTMLElement]
+    };
+    // for each egg element
+    Object.keys(this.$eggs).forEach((key) => {
+      // add listener to sell egg
+      const el = eggs?.querySelector(`#hud-eggs-${key}`) as HTMLElement;
+      el.addEventListener('click', () => {
+        gameController.onAction('hatchEgg', { value: key });
+      });
     });
-    this.$eggs = [eggs?.querySelector('.value') as HTMLElement];
     const food = hud?.querySelector('#hud-food .value') as HTMLElement;
     const money = hud?.querySelector('#open-shop .value') as HTMLElement;
     this.element = hud;
@@ -110,10 +120,16 @@ class Hud {
     return this._eggs;
   }
 
-  set eggs(value: number) {
+  set eggs(value: Eggs) {
     this._eggs = value;
-    this.$eggs.forEach((el) => {
-      el.innerText = value.toString();
+    // for each item in value
+    Object.keys(value).forEach((key) => {
+      // get the element
+      const el = this.$eggs[key as PoultryRepresentative];
+      // set the text
+      el.forEach((e) => {
+        e.innerText = value[key as PoultryRepresentative].toString();
+      });
     });
   }
 
@@ -169,17 +185,23 @@ class ShopPageItem {
     if (this.buyButton) {
       const action = this.buyButton.dataset.action as ShopTransactionAction;
       const price = priceMultiplier[action] * this.amount;
+      const type = this.buyButton.dataset.type as string;
       this.buyButton.innerHTML = `Buy ${dollarIcon}${price}`;
       this.buyButton.addEventListener('click', () => {
-        gameController.onAction(action, { value: this.amount });
+        gameController.onAction(action, {
+          value: { amount: this.amount, type: type }
+        });
       });
     }
     if (this.sellButton) {
       const action = this.sellButton.dataset.action as ShopTransactionAction;
       const price = priceMultiplier[action] * this.amount;
+      const type = this.sellButton.dataset.type as string;
       this.sellButton.innerHTML = `Sell ${dollarIcon}${price}`;
       this.sellButton.addEventListener('click', () => {
-        gameController.onAction(action, { value: this.amount });
+        gameController.onAction(action, {
+          value: { amount: this.amount, type: type }
+        });
       });
     }
   }

@@ -48,7 +48,11 @@ class Game {
     this.ui = ui.init(this.pointer);
     this.stats = stats.init({
       poultry: 0,
-      eggs: 0,
+      eggs: {
+        chicken: 0,
+        turkey: 0,
+        goose: 0
+      },
       food: 100,
       money: 50
     });

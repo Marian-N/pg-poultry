@@ -51,3 +51,20 @@
     font-family: $ff-quicksand;
   }
 }
+
+#hud-eggs {
+  display: flex;
+  gap: 8px;
+  padding: 2px;
+
+  > * {
+    @extend .sketch-border;
+    border-color: transparent;
+    padding: 2px;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $sketch-color;
+    }
+  }
+}

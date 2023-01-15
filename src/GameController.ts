@@ -19,7 +19,7 @@ export type GameAction = 'feedPoultry' | 'hatchEgg';
 export type Action = ShopTransactionAction | GameAction;
 export type Payload = {
   entity?: Entity;
-  value?: number;
+  value?: any;
 };
 
 export const priceMultiplier: Record<ShopTransactionAction, number> = {
@@ -87,10 +87,10 @@ class GameController {
    * Buys eggs based on priceMultiplier => value * priceMultiplier.buyEggs
    * @param value
    */
-  private buyEggs(value: number) {
+  private buyEggs(value: number, type: PoultryRepresentative) {
     const price = value * priceMultiplier.buyEggs;
     if (stats.money >= price) {
-      stats.eggs += value;
+      stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] + value };
       stats.money -= price;
     }
   }
@@ -99,10 +99,10 @@ class GameController {
    * Sells eggs based on priceMultiplier => value * priceMultiplier.sellEggs
    * @param value
    */
-  private sellEggs(value: number) {
+  private sellEggs(value: number, type: PoultryRepresentative) {
     const price = value * priceMultiplier.sellEggs;
-    if (stats.eggs >= value) {
-      stats.eggs -= value;
+    if (stats.eggs[type] >= value) {
+      stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - value };
       stats.money += price;
     }
   }
@@ -111,10 +111,10 @@ class GameController {
    * Creates chicken and adds it to scene
    * Remove egg from stats
    */
-  private hatchEgg() {
-    if (stats.eggs > 0) {
-      this.createPoultry('chicken');
-      stats.eggs -= 1;
+  private hatchEgg(type: PoultryRepresentative) {
+    if (stats.eggs[type] > 0) {
+      this.createPoultry(type);
+      stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - 1 };
     }
   }
 
@@ -134,19 +134,19 @@ class GameController {
       this.sellChicken(entity);
     }
     if (action === 'buyFood' && value) {
-      this.buyFood(value);
+      this.buyFood(value.amount);
     }
     if (action === 'sellFood' && value) {
-      this.sellFood(value);
+      this.sellFood(value.amount);
     }
     if (action === 'buyEggs' && value) {
-      this.buyEggs(value);
+      this.buyEggs(value.amount, value.type);
     }
     if (action === 'sellEggs' && value) {
-      this.sellEggs(value);
+      this.sellEggs(value.amount, value.type);
     }
-    if (action === 'hatchEgg') {
-      this.hatchEgg();
+    if (action === 'hatchEgg' && value) {
+      this.hatchEgg(value);
     }
   }
 

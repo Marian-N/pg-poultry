@@ -1,8 +1,11 @@
+import { PoultryRepresentative } from './entities/PoultryEntity';
 import { ui } from './globals';
 import { IHudUpdateValues } from './Ui';
 
+export type Eggs = Record<PoultryRepresentative, number>;
+
 class Stats {
-  private _eggs: number;
+  private _eggs: Eggs;
   private _food: number;
   private _poultry: number;
   private _money: number;
@@ -11,7 +14,7 @@ class Stats {
     return this._eggs;
   }
 
-  set eggs(value: number) {
+  set eggs(value: Eggs) {
     this._eggs = value;
     ui.hud.eggs = value;
   }

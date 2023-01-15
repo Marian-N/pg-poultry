@@ -19,11 +19,25 @@
               <i class="bi ci-chicken"></i> <b class="value"></b>
             </p>
           </div>
-          <div id="hud-eggs" class="hud__item sketch-button">
-            <p class="hud__item__title">Eggs</p>
-            <p class="hud__item__value">
-              <i class="bi bi-egg-fill"></i> <b class="value"></b>
-            </p>
+          <div id="hud-eggs" class="hud__item">
+            <div id="hud-eggs-chicken">
+              <p class="hud__item__title">Chicken</p>
+              <p class="hud__item__value">
+                <i class="bi bi-egg-fill"></i> <b class="value"></b>
+              </p>
+            </div>
+            <div id="hud-eggs-turkey">
+              <p class="hud__item__title">Turkey</p>
+              <p class="hud__item__value">
+                <i class="bi bi-egg-fill"></i> <b class="value"></b>
+              </p>
+            </div>
+            <div id="hud-eggs-goose">
+              <p class="hud__item__title">Goose</p>
+              <p class="hud__item__value">
+                <i class="bi bi-egg-fill"></i> <b class="value"></b>
+              </p>
+            </div>
           </div>
           <div id="hud-food" class="hud__item">
             <p class="hud__item__title">Food</p>
@@ -65,7 +79,7 @@
         <div class="shop__pages">
           <div class="shop__page" data-page="poultry">poultry</div>
           <div class="shop__page" data-page="eggs">
-            <p>chicken</p>
+            <p><b>Chicken</b></p>
             <div class="shop__item">
               <div class="shop__item__label">
                 1 <i class="bi bi-egg-fill"></i>
@@ -74,10 +88,48 @@
                 <button
                   class="button buy-button sketch-button"
                   data-action="buyEggs"
+                  data-type="chicken"
                 ></button>
                 <button
                   class="button sell-button sketch-button"
                   data-action="sellEggs"
+                  data-type="chicken"
+                ></button>
+              </div>
+            </div>
+            <p><b>Turkey</b></p>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                1 <i class="bi bi-egg-fill"></i>
+              </div>
+              <div class="button-group" data-amount="1">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyEggs"
+                  data-type="turkey"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellEggs"
+                  data-type="turkey"
+                ></button>
+              </div>
+            </div>
+            <p><b>Goose</b></p>
+            <div class="shop__item">
+              <div class="shop__item__label">
+                1 <i class="bi bi-egg-fill"></i>
+              </div>
+              <div class="button-group" data-amount="1">
+                <button
+                  class="button buy-button sketch-button"
+                  data-action="buyEggs"
+                  data-type="goose"
+                ></button>
+                <button
+                  class="button sell-button sketch-button"
+                  data-action="sellEggs"
+                  data-type="goose"
                 ></button>
               </div>
             </div>
