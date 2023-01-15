@@ -66,7 +66,14 @@ class GameController {
   private sellChicken(entity: PoultryEntity) {
     // TODO sell based on: age, health, care (weigth if implemented)
     // base price - 50 for adult, 20 for child
-    const basePrice = entity.isAdult ? 50 : 10;
+    var basePrice;
+    if (entity.ageCategory == 'child') {
+      basePrice = 10;
+    } else if (entity.ageCategory == 'adult') {
+      basePrice = 50;
+    } else {
+      basePrice = 0;
+    }
     // care - rounded to 10 and divided by 2
     const roundedCare = (Math.round(entity.care / 10) * 10) / 2;
     let price = basePrice + roundedCare;
@@ -157,7 +164,7 @@ class GameController {
       const chick = object;
 
       chick.position.set(position.x, position.y, position.z);
-      chick.scale.set(0.05, 0.05, 0.05);
+      chick.scale.set(0.03, 0.03, 0.03);
       chick.rotateY(0.5);
 
       chick.traverse(function (child) {
@@ -187,7 +194,7 @@ class GameController {
         popup.entity = chickEntity;
         chickEntity.playAnimationOnce('Clicked');
         popup.element.classList.add('active');
-        popup.title.innerHTML = 'Chick - ' + chickEntity.getId();
+        popup.title.innerHTML = chickEntity.type + ' - ' + chickEntity.getId();
         popup.content.innerHTML = ui.getChickenPopupContent(chickEntity);
         popup.element.style.left = event.clientX + 'px';
         popup.element.style.top = event.clientY + 'px';

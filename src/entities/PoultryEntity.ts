@@ -14,8 +14,10 @@ import { entityManager, scene, stats, ui } from '../globals';
 import EggEntity from './EggEntity';
 import Stats from '../Stats';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { poultryWeights } from './poultryWeights';
 
 export type PoultryRepresentative = 'chicken' | 'goose' | 'turkey';
+export type AgeCategory = 'child' | 'adult' | 'old';
 
 const radius = 90;
 const angle = 0;
@@ -26,12 +28,12 @@ class PoultryEntity extends Entity {
   private healthDecayTimer: number = 10;
   public gender: string; // m/f - random
   public age: number; // days 0-2 child, 3-9 adult, 10+ old (random death)
-  public isAdult: boolean = false;
+  public ageCategory: AgeCategory = 'child';
   public food: number; // 0-100 - 100 is full, 0 survives 30s then dies
   public care: number; // 0-100 - aritmetic mean of food, water and care
   public health: number; // 0-100 - on 0 food or 0 water starts to decrease after 30s; on age > 10 starts to decrease,
   public eggLayer: boolean; // true/false - f and adult and care > 70
-  // public weight: number; // min 1kg, max 5kg only in adult
+  public weight: number; // depends on type and age
   private isDead: boolean = false;
   public type: PoultryRepresentative;
 
@@ -84,11 +86,17 @@ class PoultryEntity extends Entity {
   }
 
   /**
+   * Update weight every 5 seconds based on food, age and type
+   * Change scale based on weight
+   */
+  updateWeight() {}
+
+  /**
    * Update health every second
    * If food is 0 start decrease health timer
    * If health timer reaches 30s start decrease health
    * If food is > 0 start increase health and reset health timer
-   * If age is > 10 start decrease health
+   * If age is > 10 = is old - start decrease health
    */
   updateHealth() {
     if (this.food == 0) {
@@ -105,8 +113,8 @@ class PoultryEntity extends Entity {
       this.health += 1;
     }
 
-    // if older than 10 years start to decrease health - 50% chance to decrease health
-    if (this.age > 10) {
+    // if older than 10 years (is old) start to decrease health - 50% chance to decrease health
+    if (this.ageCategory == 'old') {
       const decreaseRandom = Math.floor(Math.random() * 10);
       if (decreaseRandom > 5) {
         this.health -= 1;
@@ -126,13 +134,13 @@ class PoultryEntity extends Entity {
           return {
             model: Rooster,
             texture: RoosterTexture,
-            scale: new THREE.Vector3(0.06, 0.06, 0.06)
+            scale: new THREE.Vector3(0.05, 0.05, 0.05)
           };
         } else {
           return {
             model: Hen,
             texture: HenTexture,
-            scale: new THREE.Vector3(0.06, 0.06, 0.06)
+            scale: new THREE.Vector3(0.045, 0.045, 0.045)
           };
         }
       case 'goose':
@@ -141,8 +149,8 @@ class PoultryEntity extends Entity {
           texture: GooseTexture,
           scale:
             this.gender == 'm'
-              ? new THREE.Vector3(0.06, 0.06, 0.06)
-              : new THREE.Vector3(0.05, 0.05, 0.05)
+              ? new THREE.Vector3(0.05, 0.05, 0.05)
+              : new THREE.Vector3(0.045, 0.045, 0.045)
         };
       case 'turkey':
         return {
@@ -339,7 +347,7 @@ class PoultryEntity extends Entity {
    */
   toggleEggLayer() {
     //update eggLayer - f and adult and care > 70
-    if (this.age > 2 && this.age < 10) {
+    if (this.ageCategory == 'adult') {
       if (this.gender == 'f' && this.care > 50) {
         this.eggLayer = true;
       } else {
@@ -452,10 +460,19 @@ class PoultryEntity extends Entity {
       }
 
       // update to adult
-      if (this.age > 2 && !this.isAdult && !this.isDead) {
-        this.isAdult = true;
+      if (
+        this.age > 2 &&
+        this.age <= 10 &&
+        this.ageCategory != 'adult' &&
+        !this.isDead
+      ) {
+        this.ageCategory = 'adult';
+        this.onStatUpdate();
         // change model
         this.changeModel();
+      } else if (this.age > 10 && this.ageCategory != 'old' && !this.isDead) {
+        this.ageCategory = 'old';
+        this.onStatUpdate();
       }
     }
 

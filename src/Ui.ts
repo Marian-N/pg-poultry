@@ -338,7 +338,7 @@ class Ui {
       </tr>
       <tr>
         <td>Age</td>
-        <td>${chicken.age}</td>
+        <td>${chicken.age} (${chicken.ageCategory})</td>
       </tr>
     </table>
   `;

@@ -78,6 +78,30 @@ class Game {
       'f',
       3
     );
+    this.gameController.createPoultry(
+      'turkey',
+      new THREE.Vector3(20, 0, 0),
+      'm',
+      3
+    );
+    this.gameController.createPoultry(
+      'turkey',
+      new THREE.Vector3(20, 0, 10),
+      'f',
+      3
+    );
+    this.gameController.createPoultry(
+      'goose',
+      new THREE.Vector3(-20, 0, 0),
+      'm',
+      3
+    );
+    this.gameController.createPoultry(
+      'goose',
+      new THREE.Vector3(-20, 0, 10),
+      'f',
+      3
+    );
 
     this.animate();
   }
