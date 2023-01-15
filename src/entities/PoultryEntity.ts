@@ -48,6 +48,7 @@ class PoultryEntity extends Entity {
     this.food = 80;
     this.care = 80;
     this.health = 100;
+    this.weight = 0.05;
     this.eggLayer = false;
     this.gender = gender ? gender : Math.random() > 0.5 ? 'm' : 'f';
     if (age) {
@@ -86,10 +87,24 @@ class PoultryEntity extends Entity {
   }
 
   /**
-   * Update weight every 5 seconds based on food, age and type
+   * Update weight every 10s based on type, age gender and food
    * Change scale based on weight
    */
-  updateWeight() {}
+  updateWeight() {
+    const minWeight =
+      poultryWeights[this.type][this.ageCategory][this.gender].min;
+    const maxWeight =
+      poultryWeights[this.type][this.ageCategory][this.gender].max;
+
+    let weight = minWeight + (maxWeight - minWeight) * (this.food / 100);
+    this.weight = Math.round(weight * 100) / 100;
+
+    // const deltaWeight = this.weight;
+    // // console.log(deltaWeight);
+    // const scale = Math.round(deltaWeight * 10);
+    // console.log(scale);
+    // this.object.scale.set(scale, scale, scale);
+  }
 
   /**
    * Update health every second
@@ -449,6 +464,9 @@ class PoultryEntity extends Entity {
       if (this.elapsedTimeSec % 10 == 0 && this.elapsedTimeSec != 0) {
         // update care
         this.updateCareStat();
+        if (this.ageCategory != 'child') {
+          this.updateWeight();
+        }
       }
 
       // lay egg every 30s
@@ -467,11 +485,13 @@ class PoultryEntity extends Entity {
         !this.isDead
       ) {
         this.ageCategory = 'adult';
+        this.updateWeight();
         this.onStatUpdate();
         // change model
         this.changeModel();
       } else if (this.age > 10 && this.ageCategory != 'old' && !this.isDead) {
         this.ageCategory = 'old';
+        this.updateWeight();
         this.onStatUpdate();
       }
     }

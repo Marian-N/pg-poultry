@@ -1,50 +1,98 @@
-import { PoultryRepresentative } from './PoultryEntity';
+import { PoultryRepresentative, AgeCategory } from './PoultryEntity';
 
 // min max weights for each type and each age and each gender
 export const poultryWeights: Record<
   PoultryRepresentative,
-  Record<string, Record<string, number>>
+  Record<AgeCategory, Record<string, Record<string, number>>>
 > = {
   chicken: {
+    child: {
+      m: {
+        u: 0.05
+      },
+      f: {
+        u: 0.05
+      }
+    },
     adult: {
-      mMin: 2,
-      mMax: 4,
-      fMin: 1,
-      fMax: 3
+      m: {
+        min: 2,
+        max: 4
+      },
+      f: {
+        min: 1,
+        max: 3
+      }
     },
     old: {
-      mMin: 1,
-      mMax: 3,
-      fMin: 0.5,
-      fMax: 2.5
+      m: {
+        min: 1,
+        max: 3
+      },
+      f: {
+        min: 0.5,
+        max: 2.5
+      }
     }
   },
   goose: {
+    child: {
+      m: {
+        u: 0.05
+      },
+      f: {
+        u: 0.05
+      }
+    },
     adult: {
-      mMin: 3,
-      mMax: 5,
-      fMin: 2.5,
-      fMax: 4.5
+      m: {
+        min: 3,
+        max: 5
+      },
+      f: {
+        min: 2.5,
+        max: 4.5
+      }
     },
     old: {
-      mMin: 2,
-      mMax: 4,
-      fMin: 2,
-      fMax: 4
+      m: {
+        min: 2,
+        max: 4
+      },
+      f: {
+        min: 2,
+        max: 4
+      }
     }
   },
   turkey: {
+    child: {
+      m: {
+        u: 0.05
+      },
+      f: {
+        u: 0.05
+      }
+    },
     adult: {
-      mMin: 6,
-      mMax: 8,
-      fMin: 4,
-      fMax: 6
+      m: {
+        min: 5,
+        max: 8
+      },
+      f: {
+        min: 4,
+        max: 6
+      }
     },
     old: {
-      mMin: 5,
-      mMax: 7,
-      fMin: 3.5,
-      fMax: 5.5
+      m: {
+        min: 5,
+        max: 7
+      },
+      f: {
+        min: 3.5,
+        max: 5.5
+      }
     }
   }
 };

@@ -333,6 +333,10 @@ class Ui {
         <td>${chicken.food}%</td>
       </tr>
       <tr>
+        <td>Weight</td>
+        <td>${chicken.weight}kg</td>
+      </tr>
+      <tr>
         <td>Care</td>
         <td>${Math.round(chicken.care * 100) / 100}%</td>
       </tr>
