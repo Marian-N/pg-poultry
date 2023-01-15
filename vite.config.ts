@@ -38,6 +38,10 @@ export default defineConfig({
         {
           src: 'resources/images/help/*.png',
           dest: 'assets/images/help'
+        },
+        {
+          src: 'resources/models/poultry/*.png',
+          dest: 'assets'
         }
       ]
     })
