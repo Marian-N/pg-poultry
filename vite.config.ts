@@ -34,6 +34,10 @@ export default defineConfig({
         {
           src: '**/*.bin',
           dest: 'assets'
+        },
+        {
+          src: 'resources/images/help/*.png',
+          dest: 'assets/images/help'
         }
       ]
     })

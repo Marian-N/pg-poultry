@@ -1,9 +1,10 @@
 import PoultryEntity, { PoultryRepresentative } from './entities/PoultryEntity';
 import Entity from './entities/Entity';
 import { priceMultiplier, ShopTransactionAction } from './GameController';
-import { gameController } from './globals';
+import { gameController, ui } from './globals';
 import Pointer from './Pointer';
 import { Eggs } from './Stats';
+import Flickity from 'flickity/js';
 
 const dollarIcon = '<i class="bi bi-currency-dollar"></i>';
 
@@ -283,15 +284,24 @@ class Shop {
     this._activeTab = tab;
   }
 
+  open() {
+    this.isOpen = !this.isOpen;
+    this.element.classList.toggle('active');
+    ui.help.close();
+  }
+
+  close() {
+    this.isOpen = false;
+    this.element.classList.remove('active');
+  }
+
   constructor() {
     this.init();
     this.closeButton.addEventListener('click', () => {
-      this.isOpen = false;
-      this.element.classList.remove('active');
+      this.close();
     });
     this.openButton.addEventListener('click', () => {
-      this.isOpen = !this.isOpen;
-      this.element.classList.toggle('active');
+      this.open();
     });
     Object.keys(this.tabs).forEach((key) => {
       const tab = this.tabs[key as ShopTab];
@@ -340,15 +350,24 @@ class Help {
   public openButton: HTMLElement;
   public isOpen: boolean;
 
+  open() {
+    this.isOpen = !this.isOpen;
+    this.element.classList.toggle('active');
+    ui.shop.close();
+  }
+
+  close() {
+    this.isOpen = false;
+    this.element.classList.remove('active');
+  }
+
   constructor() {
     this.init();
     this.closeButton.addEventListener('click', () => {
-      this.isOpen = false;
-      this.element.classList.remove('active');
+      this.close();
     });
     this.openButton.addEventListener('click', () => {
-      this.isOpen = !this.isOpen;
-      this.element.classList.toggle('active');
+      this.open();
     });
   }
 
@@ -359,6 +378,11 @@ class Help {
     )[0] as HTMLElement;
     this.openButton = document.getElementById('hud-help') as HTMLElement;
     this.isOpen = false;
+    new Flickity('#help-carousel', {
+      resize: true,
+      contain: true,
+      cellAlign: 'left'
+    });
   }
 }
 
@@ -385,6 +409,7 @@ class Ui {
     this.popup = new Popup();
     this.pointer.onClick = (entity, event) => {
       if (this.shop.isOpen) return;
+      if (this.help.isOpen) return;
       entity.handleClick(event);
     };
   }
