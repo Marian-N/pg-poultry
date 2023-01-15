@@ -14,7 +14,7 @@ import { entityManager, scene, stats, ui } from '../globals';
 import EggEntity from './EggEntity';
 import Stats from '../Stats';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { poultryWeights } from './poultryWeights';
+import { poultryWeights, poultryScales } from './poultryConsts';
 
 export type PoultryRepresentative = 'chicken' | 'goose' | 'turkey';
 export type AgeCategory = 'child' | 'adult' | 'old';
@@ -91,19 +91,27 @@ class PoultryEntity extends Entity {
    * Change scale based on weight
    */
   updateWeight() {
+    // minmax weight based
     const minWeight =
       poultryWeights[this.type][this.ageCategory][this.gender].min;
     const maxWeight =
       poultryWeights[this.type][this.ageCategory][this.gender].max;
 
+    // weight based on food
     let weight = minWeight + (maxWeight - minWeight) * (this.food / 100);
     this.weight = Math.round(weight * 100) / 100;
 
-    // const deltaWeight = this.weight;
-    // // console.log(deltaWeight);
-    // const scale = Math.round(deltaWeight * 10);
-    // console.log(scale);
-    // this.object.scale.set(scale, scale, scale);
+    // scale based on weight
+    const deltaWeight = this.weight - minWeight;
+    const roundScaleAdd = Math.round(deltaWeight * 10) * 0.0005;
+    let scaleVectorAdd = new THREE.Vector3(
+      roundScaleAdd,
+      roundScaleAdd,
+      roundScaleAdd
+    );
+    // scale is based on default scale + scale based on weight
+    const scale = scaleVectorAdd.add(poultryScales[this.type][this.gender]);
+    this.object.scale.set(scale.x, scale.y, scale.z);
   }
 
   /**
@@ -149,32 +157,26 @@ class PoultryEntity extends Entity {
           return {
             model: Rooster,
             texture: RoosterTexture,
-            scale: new THREE.Vector3(0.05, 0.05, 0.05)
+            scale: poultryScales.chicken[this.gender]
           };
         } else {
           return {
             model: Hen,
             texture: HenTexture,
-            scale: new THREE.Vector3(0.045, 0.045, 0.045)
+            scale: poultryScales.chicken[this.gender]
           };
         }
       case 'goose':
         return {
           model: Goose,
           texture: GooseTexture,
-          scale:
-            this.gender == 'm'
-              ? new THREE.Vector3(0.05, 0.05, 0.05)
-              : new THREE.Vector3(0.045, 0.045, 0.045)
+          scale: poultryScales.goose[this.gender]
         };
       case 'turkey':
         return {
           model: Turkey,
           texture: TurkeyTexture,
-          scale:
-            this.gender == 'm'
-              ? new THREE.Vector3(0.06, 0.06, 0.06)
-              : new THREE.Vector3(0.05, 0.05, 0.05)
+          scale: poultryScales.turkey[this.gender]
         };
     }
   }
@@ -361,7 +363,7 @@ class PoultryEntity extends Entity {
    * Toggle eggLayer based on age, gender and care
    */
   toggleEggLayer() {
-    //update eggLayer - f and adult and care > 70
+    //update eggLayer - f and adult and care > 50
     if (this.ageCategory == 'adult') {
       if (this.gender == 'f' && this.care > 50) {
         this.eggLayer = true;

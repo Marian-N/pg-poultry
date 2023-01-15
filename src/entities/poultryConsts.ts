@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { PoultryRepresentative, AgeCategory } from './PoultryEntity';
 
 // min max weights for each type and each age and each gender
@@ -76,7 +77,7 @@ export const poultryWeights: Record<
     },
     adult: {
       m: {
-        min: 5,
+        min: 6,
         max: 8
       },
       f: {
@@ -94,5 +95,24 @@ export const poultryWeights: Record<
         max: 5.5
       }
     }
+  }
+};
+
+// default scales for each type and each gender
+export const poultryScales: Record<
+  PoultryRepresentative,
+  Record<string, THREE.Vector3>
+> = {
+  chicken: {
+    m: new THREE.Vector3(0.05, 0.05, 0.05),
+    f: new THREE.Vector3(0.045, 0.045, 0.045)
+  },
+  goose: {
+    m: new THREE.Vector3(0.05, 0.05, 0.05),
+    f: new THREE.Vector3(0.045, 0.045, 0.045)
+  },
+  turkey: {
+    m: new THREE.Vector3(0.07, 0.07, 0.07),
+    f: new THREE.Vector3(0.06, 0.06, 0.06)
   }
 };
