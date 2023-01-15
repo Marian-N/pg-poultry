@@ -48,6 +48,8 @@ class GameController {
     if (stats.money >= value) {
       stats.food += value;
       stats.money -= value * priceMultiplier.buyFood;
+    } else {
+      ui.notification.showMessage('no-money');
     }
   }
 
@@ -60,6 +62,8 @@ class GameController {
     if (stats.food >= value) {
       stats.food -= value;
       stats.money += value * priceMultiplier.sellFood;
+    } else {
+      ui.notification.showMessage('not-enough-to-sell', { type: 'food' });
     }
   }
 
@@ -106,6 +110,8 @@ class GameController {
     if (stats.money >= price) {
       stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] + value };
       stats.money -= price;
+    } else {
+      ui.notification.showMessage('no-money');
     }
   }
 
@@ -119,6 +125,11 @@ class GameController {
       stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - value };
       stats.money += price;
     }
+    {
+      ui.notification.showMessage('not-enough-to-sell', {
+        type: type + ' eggs'
+      });
+    }
   }
 
   /**
@@ -130,6 +141,8 @@ class GameController {
       this.audio.play('hatch_egg');
       this.createPoultry(type);
       stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - 1 };
+    } else {
+      ui.notification.showMessage('no-eggs', { type: type });
     }
   }
 
@@ -139,6 +152,10 @@ class GameController {
     const { entity, value } = payload;
     // Feeds poultry with constraints: 1. Can't feed more than 10 food 2. Can't feed more than food capacity (100) 3. Can't feed more than the amount of food you have
     if (action === 'feedPoultry') {
+      if (stats.food <= 0) {
+        ui.notification.showMessage('no-food');
+        return;
+      }
       if (entity instanceof PoultryEntity) {
         const updateFoodValue = Math.min(10, 100 - entity.food, stats.food);
         entity.updateFoodStat(true, updateFoodValue);

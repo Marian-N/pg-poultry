@@ -386,12 +386,87 @@ class Help {
   }
 }
 
+export type NotificationMessageType =
+  | 'no-eggs'
+  | 'no-food'
+  | 'no-money'
+  | 'not-enough-to-sell';
+export type NotificationMessage = {
+  message: string;
+  values?: Record<string, string>;
+};
+export type NotificationMessages = Record<
+  NotificationMessageType,
+  NotificationMessage
+>;
+export const notificationMessages: NotificationMessages = {
+  'no-eggs': {
+    message: "You don't have any {{type}} eggs!",
+    values: {
+      type: 'type'
+    }
+  },
+  'no-food': {
+    message: "You don't have any food!"
+  },
+  'no-money': {
+    message: "You don't have enough money!"
+  },
+  'not-enough-to-sell': {
+    message: "You don't have enough {{type}} to sell!",
+    values: {
+      type: 'type'
+    }
+  }
+};
+
+class Notification {
+  public element: HTMLElement;
+  public timeouts: number[];
+
+  constructor() {
+    this.init();
+  }
+
+  display(message: string) {
+    this.element.innerHTML = message;
+    this.element.classList.remove('active');
+    this.element.getBoundingClientRect();
+    this.element.classList.add('active');
+    this.timeouts.forEach((timeout) => {
+      window.clearTimeout(timeout);
+    });
+    const timeout = window.setTimeout(() => {
+      this.element.classList.remove('active');
+    }, 1000);
+    this.timeouts.push(timeout);
+  }
+
+  showMessage(type: NotificationMessageType, values?: Record<string, string>) {
+    const message = notificationMessages[type];
+    let messageText = message.message;
+    if (message.values && values) {
+      Object.keys(message.values).forEach((key) => {
+        const value = values[key];
+        messageText = messageText.replace(`{{${key}}}`, value);
+      });
+    }
+    this.display(messageText);
+  }
+
+  private init() {
+    this.element = document.getElementById('notification') as HTMLElement;
+    this.timeouts = [];
+  }
+}
+
 class Ui {
   private pointer: Pointer;
   public popup: Popup;
   public shop: Shop;
   public hud: Hud;
   public help: Help;
+  public notification: Notification;
 
   constructor() {}
 
@@ -401,6 +476,7 @@ class Ui {
     this.initShop();
     this.initHud();
     this.help = new Help();
+    this.notification = new Notification();
 
     return this;
   }
