@@ -89,6 +89,8 @@ class PoultryEntity extends Entity {
   /**
    * Update weight every 10s based on type, age gender and food
    * Change scale based on weight
+   * Scale difference is max 0.01 (deltaWeight*10 * 0.0005)
+   * Max deltaWeight is 2 (*10 = 20, *0.0005 = 0.01)
    */
   updateWeight() {
     // minmax weight based
@@ -487,12 +489,14 @@ class PoultryEntity extends Entity {
         !this.isDead
       ) {
         this.ageCategory = 'adult';
+        this.toggleEggLayer();
         this.updateWeight();
         this.onStatUpdate();
         // change model
         this.changeModel();
       } else if (this.age > 10 && this.ageCategory != 'old' && !this.isDead) {
         this.ageCategory = 'old';
+        this.toggleEggLayer();
         this.updateWeight();
         this.onStatUpdate();
       }

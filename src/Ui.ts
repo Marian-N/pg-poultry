@@ -373,6 +373,14 @@ class Ui {
     <table height="100%" width="100%"
     style="border-spacing: 10px 0;">
       <tr>
+        <td>Gender</td>
+        <td>${
+          chicken.gender == 'f'
+            ? `<i class="bi bi-gender-female" style="color:red"></i>`
+            : `<i class="bi bi-gender-male" style="color:blue"></i>`
+        }</td>
+      </tr>
+      <tr>
         <td>Health</td>
         <td>${chicken.health}%</td>
       </tr>

@@ -64,24 +64,33 @@ class GameController {
   }
 
   /**
-   * Sells chicken based on care
-   * Calculates price: 50 + care rounded to 10 / 2
+   * Sells chicken based on care, weight and age
+   * Calculates price:
+   *  - base price - 20 for adult, 0 for child, 10 for old
+   *  - care - rounded to 10 and divided by 2
+   *  - weight - multiplied by 10, divided by 2 and rounded
+   *
    * @param entity
    */
   private sellChicken(entity: PoultryEntity) {
-    // TODO sell based on: age, health, care (weigth if implemented)
-    // base price - 50 for adult, 20 for child
+    // sell based on: age, care and weigth
+    // base price - 20 for adult, 0 for child, 10 for old
     var basePrice;
     if (entity.ageCategory == 'child') {
-      basePrice = 10;
-    } else if (entity.ageCategory == 'adult') {
-      basePrice = 50;
-    } else {
       basePrice = 0;
+    } else if (entity.ageCategory == 'adult') {
+      basePrice = 20;
+    } else {
+      basePrice = 10;
     }
     // care - rounded to 10 and divided by 2
     const roundedCare = (Math.round(entity.care / 10) * 10) / 2;
-    let price = basePrice + roundedCare;
+    // weight - multiplied by 10, divided by 2 and rounded
+    const roundedWeight = Math.round((entity.weight * 10) / 2);
+
+    // final price
+    let price = basePrice + roundedCare + roundedWeight;
+    console.log(price);
     // sell chicken
     entity.sell();
     // add money to stats
