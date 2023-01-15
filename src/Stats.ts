@@ -1,5 +1,5 @@
 import { PoultryRepresentative } from './entities/PoultryEntity';
-import { ui } from './globals';
+import { gameController, ui } from './globals';
 import { IHudUpdateValues } from './Ui';
 
 export type Eggs = Record<PoultryRepresentative, number>;
@@ -44,6 +44,7 @@ class Stats {
   set money(value: number) {
     this._money = value;
     ui.hud.money = value;
+    gameController.audio.play('coin');
   }
 
   update(values: IHudUpdateValues) {

@@ -4,9 +4,10 @@ import Chick from '../resources/models/poultry/Chick.fbx';
 import ChickTexture from '../resources/models/poultry/Tex_Chick.png';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { entityManager, scene, ui, stats } from './globals';
+import { entityManager, scene, ui, stats, gameController } from './globals';
 import Entity from './entities/Entity';
 import { PoultryRepresentative } from './entities/PoultryEntity';
+import AudioController from './AudioController';
 
 export type ShopTransactionAction =
   | 'buyEggs'
@@ -32,7 +33,11 @@ export const priceMultiplier: Record<ShopTransactionAction, number> = {
 };
 
 class GameController {
-  constructor() {}
+  public audio: AudioController;
+
+  constructor() {
+    this.audio = new AudioController();
+  }
 
   /**
    * Increase food by value, if money is enough
@@ -113,6 +118,7 @@ class GameController {
    */
   private hatchEgg(type: PoultryRepresentative) {
     if (stats.eggs[type] > 0) {
+      this.audio.play('hatch_egg');
       this.createPoultry(type);
       stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - 1 };
     }
@@ -190,6 +196,7 @@ class GameController {
       }
       chickEntity.changeAnimation('Idle');
       chickEntity.onClick = (event) => {
+        gameController.audio.play('click');
         const popup = ui.popup;
         popup.entity = chickEntity;
         chickEntity.playAnimationOnce('Clicked');

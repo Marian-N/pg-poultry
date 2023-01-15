@@ -68,3 +68,12 @@
     }
   }
 }
+
+#hud-audio {
+  .bi {
+    color: red;
+    &.allow {
+      color: inherit;
+    }
+  }
+}

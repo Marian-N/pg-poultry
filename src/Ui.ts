@@ -71,6 +71,7 @@ class Hud {
   public $eggs: Record<PoultryRepresentative, HTMLElement[]>;
   public $food: HTMLElement[];
   public $money: HTMLElement[];
+  public $audio: HTMLElement;
   private _poultry: number;
   private _eggs: Eggs;
   private _food: number;
@@ -99,10 +100,35 @@ class Hud {
     });
     const food = hud?.querySelector('#hud-food .value') as HTMLElement;
     const money = hud?.querySelector('#open-shop .value') as HTMLElement;
+    this.$audio = hud?.querySelector('#hud-audio') as HTMLElement;
+    this.$audio.addEventListener('click', () =>
+      this.toggleAudio(undefined, true)
+    );
     this.element = hud;
     this.$poultry = [poultry];
     this.$food = [food];
     this.$money = [money];
+  }
+
+  public toggleAudio(value?: boolean, isFromClick: boolean = false) {
+    const audio = this.$audio.querySelector('.bi') as HTMLAudioElement;
+    if (value === undefined) {
+      audio.classList.toggle('bi-volume-up-fill');
+      audio.classList.toggle('bi-volume-mute-fill');
+      audio.classList.toggle('allow');
+      if (isFromClick)
+        gameController.audio.allowed = !gameController.audio.allowed;
+    } else if (value) {
+      audio.classList.add('bi-volume-up-fill');
+      audio.classList.remove('bi-volume-mute-fill');
+      audio.classList.add('allow');
+      if (isFromClick) gameController.audio.allowed = true;
+    } else {
+      audio.classList.add('bi-volume-mute-fill');
+      audio.classList.remove('bi-volume-up-fill');
+      audio.classList.remove('allow');
+      if (isFromClick) gameController.audio.allowed = false;
+    }
   }
 
   get poultry() {
@@ -264,7 +290,7 @@ class Shop {
       this.element.classList.remove('active');
     });
     this.openButton.addEventListener('click', () => {
-      this.isOpen = true;
+      this.isOpen = !this.isOpen;
       this.element.classList.toggle('active');
     });
     Object.keys(this.tabs).forEach((key) => {

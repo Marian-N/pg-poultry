@@ -281,6 +281,14 @@ class Game {
       this.onWindowRightClick(event);
       return false;
     });
+    // play audio after user interacts with the page
+    window.addEventListener(
+      'click',
+      () => {
+        this.gameController.audio.init();
+      },
+      { once: true }
+    );
   }
 
   private onWindowResize() {
