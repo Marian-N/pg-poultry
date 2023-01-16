@@ -31,6 +31,11 @@
     opacity: 1;
   }
 
+  i {
+    position: absolute;
+    background-color: #f582a7;
+  }
+
   &__content {
     max-width: 1300px;
     height: 100%;
@@ -41,11 +46,26 @@
     justify-content: space-between;
   }
 
+  @keyframes fancy-text {
+    from {
+      color: white;
+    }
+
+    to {
+      color: #f10086;
+    }
+  }
   &__body {
     font-family: $ff-marhey;
     font-size: 32px;
     color: white;
     font-weight: bold;
+
+    p {
+      pointer-events: all;
+      cursor: pointer;
+      animation: fancy-text 1s linear infinite alternate;
+    }
   }
 
   &__footer {
@@ -69,10 +89,6 @@
         color: #f582a7;
         font-weight: normal;
       }
-    }
-
-    i {
-      background-color: #f582a7;
     }
   }
 
