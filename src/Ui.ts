@@ -111,6 +111,7 @@ class Hud {
     this.$money = [money];
   }
 
+  // toggle audio on if value is true, off if false, or toggle if undefined
   public toggleAudio(value?: boolean, isFromClick: boolean = false) {
     const audio = this.$audio.querySelector('.bi') as HTMLAudioElement;
     if (value === undefined) {
@@ -274,6 +275,7 @@ class Shop {
     return this._activeTab;
   }
 
+  // change the active tab to the given tab
   set activeTab(tab: ShopTab) {
     if (this.activeTab && tab) {
       this.tabs[this.activeTab].classList.remove('active');
@@ -435,6 +437,8 @@ class Notification {
     this.init();
   }
 
+  // display message and hide it after 1 second
+  // if message is displayed again overwrite it and reset timeout
   display(message: string) {
     this.element.innerHTML = message;
     this.element.classList.remove('active');
@@ -449,6 +453,7 @@ class Notification {
     this.timeouts.push(timeout);
   }
 
+  // Show message from notificationMessages and replace values if provided as argument
   showMessage(type: NotificationMessageType, values?: Record<string, string>) {
     const message = notificationMessages[type];
     let messageText = message.message;

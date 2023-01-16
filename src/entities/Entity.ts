@@ -44,11 +44,13 @@ class Entity {
     }
   }
 
+  // Remove entity from scene and entityManager
   destroy() {
     scene.remove(this.object);
     entityManager.remove(this);
   }
 
+  // Call oncClick function if it exists
   handleClick(event: MouseEvent) {
     if (this.onClick) this.onClick(event);
   }
