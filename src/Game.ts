@@ -31,6 +31,7 @@ class Game {
   private ui: Ui;
   private stats: Stats;
   private gameController: GameController;
+  private didUserInteract: boolean = false;
   torus: THREE.Mesh;
 
   constructor() {
@@ -195,7 +196,7 @@ class Game {
 
   private animate() {
     requestAnimationFrame(() => this.animate());
-    if (!this.running) return;
+    if (!this.running || !this.didUserInteract) return;
     this.controls.update();
     this.pointer.update(this.camera, this.entityManager.getEntities());
     this.renderer.render(this.scene, this.camera);
@@ -286,6 +287,14 @@ class Game {
       'click',
       () => {
         this.gameController.audio.init();
+        this.didUserInteract = true;
+        const welcomeScreen = document.getElementById(
+          'welcome-screen'
+        ) as HTMLElement;
+        welcomeScreen.classList.remove('visible');
+        setTimeout(() => {
+          welcomeScreen.remove();
+        }, 1500);
       },
       { once: true }
     );

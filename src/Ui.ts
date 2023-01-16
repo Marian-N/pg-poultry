@@ -390,7 +390,8 @@ export type NotificationMessageType =
   | 'no-eggs'
   | 'no-food'
   | 'no-money'
-  | 'not-enough-to-sell';
+  | 'not-enough-to-sell'
+  | 'is-full';
 export type NotificationMessage = {
   message: string;
   values?: Record<string, string>;
@@ -414,6 +415,12 @@ export const notificationMessages: NotificationMessages = {
   },
   'not-enough-to-sell': {
     message: "You don't have enough {{type}} to sell!",
+    values: {
+      type: 'type'
+    }
+  },
+  'is-full': {
+    message: 'This {{type}} is full!',
     values: {
       type: 'type'
     }

@@ -157,6 +157,10 @@ class GameController {
         return;
       }
       if (entity instanceof PoultryEntity) {
+        if (entity.food >= 100) {
+          ui.notification.showMessage('is-full', { type: entity.type });
+          return;
+        }
         const updateFoodValue = Math.min(10, 100 - entity.food, stats.food);
         entity.updateFoodStat(true, updateFoodValue);
         stats.food -= updateFoodValue;
