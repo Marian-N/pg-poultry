@@ -124,8 +124,7 @@ class GameController {
     if (stats.eggs[type] >= value) {
       stats.eggs = { ...stats.eggs, [type]: stats.eggs[type] - value };
       stats.money += price;
-    }
-    {
+    } else {
       ui.notification.showMessage('not-enough-to-sell', {
         type: type + ' eggs'
       });
